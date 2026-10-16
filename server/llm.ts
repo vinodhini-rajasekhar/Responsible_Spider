@@ -66,7 +66,8 @@ function simulate(content: string, guarded: boolean): string {
   const raw = content.replace(/\^/g, ' ').replace(/<<DATA>>/g, '');
   const lines = raw.split('\n').map((l) => l.trim()).filter(Boolean);
   const title = (lines.find((l) => l.startsWith('Title:')) ?? 'Title: this page').slice(7);
-  const sentences = lines.filter((l) => !l.startsWith('Title:')).join(' ').split(/(?<=[.!?])\s+/);
+  const prose = lines.filter((l) => !l.startsWith('Title:') && (/[.!?]$/.test(l) || l.split(' ').length > 8));
+  const sentences = prose.join(' ').split(/(?<=[.!?])\s+/);
   const instructive = /(ignore|disregard)\b.*\binstructions|\b(AI|assistant|summari[sz]er|model)s?\b.{0,40}\b(must|should|instructed)|note to ai|you are now|respond with|begin your summary/i;
   const benign = sentences.filter((s) => !instructive.test(s) && s.length > 25).slice(0, 2).join(' ');
   let out = `"${title}" — ${benign || 'The page has little readable content.'}`;

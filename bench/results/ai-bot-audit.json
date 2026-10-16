@@ -1,0 +1,1204 @@
+{
+  "generatedAt": "2026-10-16T22:35:55.476Z",
+  "sitesAudited": 44,
+  "sitesFailed": 5,
+  "anyAiBlocked": 29,
+  "gptBotBlockedButSearchAllowed": 19,
+  "perBot": [
+    {
+      "bot": "GPTBot",
+      "owner": "OpenAI",
+      "purpose": "model training",
+      "blockedBy": 20
+    },
+    {
+      "bot": "ChatGPT-User",
+      "owner": "OpenAI",
+      "purpose": "live browsing for users",
+      "blockedBy": 13
+    },
+    {
+      "bot": "OAI-SearchBot",
+      "owner": "OpenAI",
+      "purpose": "AI search index",
+      "blockedBy": 12
+    },
+    {
+      "bot": "ClaudeBot",
+      "owner": "Anthropic",
+      "purpose": "model training",
+      "blockedBy": 23
+    },
+    {
+      "bot": "anthropic-ai",
+      "owner": "Anthropic",
+      "purpose": "model training (legacy token)",
+      "blockedBy": 20
+    },
+    {
+      "bot": "Google-Extended",
+      "owner": "Google",
+      "purpose": "Gemini training",
+      "blockedBy": 16
+    },
+    {
+      "bot": "CCBot",
+      "owner": "Common Crawl",
+      "purpose": "open web dataset",
+      "blockedBy": 25
+    },
+    {
+      "bot": "PerplexityBot",
+      "owner": "Perplexity",
+      "purpose": "AI search index",
+      "blockedBy": 19
+    },
+    {
+      "bot": "Bytespider",
+      "owner": "ByteDance",
+      "purpose": "model training",
+      "blockedBy": 24
+    },
+    {
+      "bot": "Applebot-Extended",
+      "owner": "Apple",
+      "purpose": "model training",
+      "blockedBy": 20
+    },
+    {
+      "bot": "meta-externalagent",
+      "owner": "Meta",
+      "purpose": "model training",
+      "blockedBy": 22
+    },
+    {
+      "bot": "cohere-ai",
+      "owner": "Cohere",
+      "purpose": "model training",
+      "blockedBy": 17
+    }
+  ],
+  "categories": [
+    {
+      "category": "news",
+      "sites": 9,
+      "anyAiBlocked": 9
+    },
+    {
+      "category": "reference",
+      "sites": 2,
+      "anyAiBlocked": 0
+    },
+    {
+      "category": "developer",
+      "sites": 1,
+      "anyAiBlocked": 1
+    },
+    {
+      "category": "publishing",
+      "sites": 2,
+      "anyAiBlocked": 1
+    },
+    {
+      "category": "community",
+      "sites": 2,
+      "anyAiBlocked": 2
+    },
+    {
+      "category": "social",
+      "sites": 6,
+      "anyAiBlocked": 5
+    },
+    {
+      "category": "video",
+      "sites": 2,
+      "anyAiBlocked": 1
+    },
+    {
+      "category": "commerce",
+      "sites": 4,
+      "anyAiBlocked": 2
+    },
+    {
+      "category": "entertainment",
+      "sites": 2,
+      "anyAiBlocked": 2
+    },
+    {
+      "category": "lifestyle",
+      "sites": 1,
+      "anyAiBlocked": 1
+    },
+    {
+      "category": "health",
+      "sites": 1,
+      "anyAiBlocked": 1
+    },
+    {
+      "category": "government",
+      "sites": 2,
+      "anyAiBlocked": 0
+    },
+    {
+      "category": "education",
+      "sites": 4,
+      "anyAiBlocked": 1
+    },
+    {
+      "category": "science",
+      "sites": 2,
+      "anyAiBlocked": 1
+    },
+    {
+      "category": "art",
+      "sites": 3,
+      "anyAiBlocked": 1
+    },
+    {
+      "category": "stock-media",
+      "sites": 1,
+      "anyAiBlocked": 1
+    }
+  ],
+  "sites": [
+    {
+      "domain": "nytimes.com",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [],
+      "searchBlocked": false
+    },
+    {
+      "domain": "theguardian.com",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "ClaudeBot",
+        "anthropic-ai",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "Google-Extended",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "washingtonpost.com",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "ClaudeBot",
+        "anthropic-ai",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "Google-Extended",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "cnn.com",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "Google-Extended",
+        "meta-externalagent"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "bbc.co.uk",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [],
+      "searchBlocked": false
+    },
+    {
+      "domain": "reuters.com",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "apnews.com",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "CCBot",
+        "PerplexityBot",
+        "Applebot-Extended",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "Google-Extended",
+        "Bytespider",
+        "meta-externalagent"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "npr.org",
+      "category": "news",
+      "ok": false,
+      "blocked": [],
+      "allowed": [],
+      "searchBlocked": false
+    },
+    {
+      "domain": "wsj.com",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "bloomberg.com",
+      "category": "news",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "wikipedia.org",
+      "category": "reference",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "britannica.com",
+      "category": "reference",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "stackoverflow.com",
+      "category": "reference",
+      "ok": false,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "github.com",
+      "category": "developer",
+      "ok": true,
+      "blocked": [
+        "Bytespider"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "medium.com",
+      "category": "publishing",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ClaudeBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "substack.com",
+      "category": "publishing",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "quora.com",
+      "category": "community",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended"
+      ],
+      "allowed": [
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "reddit.com",
+      "category": "community",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [],
+      "searchBlocked": true
+    },
+    {
+      "domain": "x.com",
+      "category": "social",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [],
+      "searchBlocked": false
+    },
+    {
+      "domain": "facebook.com",
+      "category": "social",
+      "ok": true,
+      "blocked": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "Bytespider",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ClaudeBot",
+        "PerplexityBot",
+        "Applebot-Extended"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "instagram.com",
+      "category": "social",
+      "ok": true,
+      "blocked": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "Bytespider",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ClaudeBot",
+        "PerplexityBot",
+        "Applebot-Extended"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "linkedin.com",
+      "category": "social",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "pinterest.com",
+      "category": "social",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [],
+      "searchBlocked": false
+    },
+    {
+      "domain": "tiktok.com",
+      "category": "social",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent"
+      ],
+      "allowed": [
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "youtube.com",
+      "category": "video",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "vimeo.com",
+      "category": "video",
+      "ok": true,
+      "blocked": [
+        "CCBot",
+        "Bytespider"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "PerplexityBot",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "amazon.com",
+      "category": "commerce",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "anthropic-ai",
+        "Applebot-Extended"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "ebay.com",
+      "category": "commerce",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "Google-Extended",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "etsy.com",
+      "category": "commerce",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "walmart.com",
+      "category": "commerce",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "imdb.com",
+      "category": "entertainment",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [],
+      "searchBlocked": false
+    },
+    {
+      "domain": "goodreads.com",
+      "category": "entertainment",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "CCBot"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "allrecipes.com",
+      "category": "lifestyle",
+      "ok": true,
+      "blocked": [
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "webmd.com",
+      "category": "health",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ClaudeBot",
+        "CCBot"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "mayoclinic.org",
+      "category": "health",
+      "ok": false,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "nih.gov",
+      "category": "government",
+      "ok": false,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "usa.gov",
+      "category": "government",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "gov.uk",
+      "category": "government",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "harvard.edu",
+      "category": "education",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "mit.edu",
+      "category": "education",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "duke.edu",
+      "category": "education",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "coursera.org",
+      "category": "education",
+      "ok": true,
+      "blocked": [
+        "meta-externalagent"
+      ],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "arxiv.org",
+      "category": "science",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "nature.com",
+      "category": "science",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ChatGPT-User",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "OAI-SearchBot"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "deviantart.com",
+      "category": "art",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "artstation.com",
+      "category": "art",
+      "ok": true,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "flickr.com",
+      "category": "art",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "PerplexityBot"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "shutterstock.com",
+      "category": "stock-media",
+      "ok": true,
+      "blocked": [
+        "GPTBot",
+        "ClaudeBot",
+        "CCBot",
+        "meta-externalagent"
+      ],
+      "allowed": [
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    },
+    {
+      "domain": "gettyimages.com",
+      "category": "stock-media",
+      "ok": false,
+      "blocked": [],
+      "allowed": [
+        "GPTBot",
+        "ChatGPT-User",
+        "OAI-SearchBot",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Google-Extended",
+        "CCBot",
+        "PerplexityBot",
+        "Bytespider",
+        "Applebot-Extended",
+        "meta-externalagent",
+        "cohere-ai"
+      ],
+      "searchBlocked": false
+    }
+  ]
+}
