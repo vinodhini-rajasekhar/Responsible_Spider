@@ -83,18 +83,43 @@ function simulate(content: string, guarded: boolean): string {
   return out;
 }
 
+/** Free-tier orgs are often capped at ~10 RPM; space requests so the eval can finish. */
+let nextSlot = 0;
+const MIN_GAP_MS = Number(process.env.OPENAI_MIN_GAP_MS ?? 6500);
+
+async function throttle() {
+  const now = Date.now();
+  const wait = Math.max(0, nextSlot - now);
+  nextSlot = Math.max(now, nextSlot) + MIN_GAP_MS;
+  if (wait) await new Promise((r) => setTimeout(r, wait));
+}
+
 async function complete(system: string, content: string, guarded: boolean): Promise<string> {
   if (!client) return simulate(content, guarded);
-  const res = await client.chat.completions.create({
-    model: MODEL,
-    temperature: 0,
-    max_tokens: 220,
-    messages: [
-      { role: 'system', content: system },
-      { role: 'user', content: `${TASK}\n\n${guarded ? spotlight(content) : content}` },
-    ],
-  });
-  return res.choices[0]?.message?.content?.trim() ?? '';
+  const messages = [
+    { role: 'system' as const, content: system },
+    { role: 'user' as const, content: `${TASK}\n\n${guarded ? spotlight(content) : content}` },
+  ];
+  for (let attempt = 0; ; attempt++) {
+    await throttle();
+    try {
+      const res = await client.chat.completions.create({ model: MODEL, temperature: 0, max_tokens: 220, messages });
+      return res.choices[0]?.message?.content?.trim() ?? '';
+    } catch (err) {
+      const status = (err as { status?: number }).status;
+      if (status !== 429 || attempt >= 12) throw err;
+      const msg = String((err as Error).message ?? '');
+      const m = msg.match(/try again in (\d+)m(\d+)?s/i) ?? msg.match(/try again in (\d+)s/i);
+      let wait = Math.min(90_000, 4000 * 2 ** attempt);
+      if (m) {
+        wait = m[2] !== undefined ? (Number(m[1]) * 60 + Number(m[2] || 0)) * 1000 + 5000 : Number(m[1]) * 1000 + 2000;
+        wait = Math.min(wait, 35 * 60_000);
+      }
+      console.warn(`[openai] 429 — waiting ${Math.round(wait / 1000)}s (attempt ${attempt + 1})`);
+      nextSlot = Date.now() + wait;
+      await new Promise((r) => setTimeout(r, wait));
+    }
+  }
 }
 
 function run(output: string, trusted: string): AgentRun {
@@ -106,7 +131,9 @@ export async function compareAgents(title: string, segments: Segment[], pii: Pii
   const visible = segments.filter((s) => !s.hidden).map((s) => s.text).join(' ');
   const naive = naiveContent(title, segments);
   const guarded = guardedContent(title, segments, pii);
-  const [n, g] = await Promise.all([complete(NAIVE_SYSTEM, naive, false), complete(GUARDED_SYSTEM, guarded.text, true)]);
+  // Sequential: shared throttle keeps us under free-tier RPM limits.
+  const n = await complete(NAIVE_SYSTEM, naive, false);
+  const g = await complete(GUARDED_SYSTEM, guarded.text, true);
   return { model: SIMULATED ? 'simulated-gullible-model' : MODEL, simulated: SIMULATED, naive: run(n, visible), guarded: run(g, visible) };
 }
 
