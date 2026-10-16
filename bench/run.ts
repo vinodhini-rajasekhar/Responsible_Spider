@@ -19,8 +19,27 @@ import { MODEL, SIMULATED, compareAgents } from '../server/llm.ts';
 const args = process.argv.slice(2);
 const noAgent = args.includes('--no-agent');
 const limitIdx = args.indexOf('--limit');
-const cases = limitIdx >= 0 ? BENCH.slice(0, Number(args[limitIdx + 1])) : BENCH;
-const CONCURRENCY = 6;
+const stratified = args.includes('--stratified');
+/** One page per technique×payload (and all benign), for free-tier daily budgets. */
+function pickStratified() {
+  const seen = new Set<string>();
+  const out: typeof BENCH = [];
+  for (const c of BENCH) {
+    if (c.kind !== 'attack') {
+      out.push(c);
+      continue;
+    }
+    const key = `${c.technique}::${c.payload}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(c);
+  }
+  return out;
+}
+let cases = stratified ? pickStratified() : BENCH;
+if (limitIdx >= 0) cases = cases.slice(0, Number(args[limitIdx + 1]));
+// Free-tier accounts are often capped at ~10 RPM / 50 RPD; each page makes 2 chat calls.
+const CONCURRENCY = 1;
 
 interface Row {
   c: BenchCase;
