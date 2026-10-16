@@ -20,7 +20,10 @@ const args = process.argv.slice(2);
 const noAgent = args.includes('--no-agent');
 const limitIdx = args.indexOf('--limit');
 const stratified = args.includes('--stratified');
-/** One page per technique×payload (and all benign), for free-tier daily budgets. */
+/**
+ * Free-tier-friendly sample (~34 chat calls): every benign page, plus one attack
+ * per hiding technique (canary payload). Enough to report real-model ASR by technique.
+ */
 function pickStratified() {
   const seen = new Set<string>();
   const out: typeof BENCH = [];
@@ -29,9 +32,8 @@ function pickStratified() {
       out.push(c);
       continue;
     }
-    const key = `${c.technique}::${c.payload}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
+    if (c.payload !== 'canary' || seen.has(c.technique!)) continue;
+    seen.add(c.technique!);
     out.push(c);
   }
   return out;
