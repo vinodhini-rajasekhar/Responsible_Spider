@@ -4,103 +4,79 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="An explainable procedural spider: watch every IK and gait decision in real time." />
-    <title>Spider XAI — explainable procedural animation</title>
+    <meta name="description" content="An explainable AI web crawler that shows why it takes, skips, redacts or quarantines every page." />
+    <title>Responsible Spider: an explainable AI web crawler</title>
   </head>
   <body>
     <div id="app">
+      <header id="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <div>
+            <h1>Responsible Spider</h1>
+            <p>An AI web crawler that explains what it takes, what it refuses, and what tried to hijack it.</p>
+          </div>
+        </div>
+        <form id="crawl-form" class="controls" autocomplete="off">
+          <div class="seed">
+            <input id="seed" type="url" required aria-label="Start URL" placeholder="https://example.com/" />
+            <button type="button" id="use-lab" class="btn btn-ghost btn-sm" title="Use the built-in Willow Creek lab site">Lab site</button>
+            <button type="button" id="use-bench" class="btn btn-ghost btn-sm" title="Crawl the 89-page injection benchmark">Benchmark</button>
+          </div>
+          <label class="field">Pages <input id="max-pages" type="number" min="1" max="120" value="25" /></label>
+          <label class="check" title="Shadow-fetch opted-out pages to show what a naive scraper would take (lab site only)"><input id="compare" type="checkbox" checked /> Naive comparison</label>
+          <label class="check" title="Run naive and guarded AI agents on each page"><input id="agent" type="checkbox" checked /> AI agent</label>
+          <button id="crawl" class="btn btn-primary" type="submit">Crawl</button>
+          <button id="stop" class="btn" type="button" disabled>Stop</button>
+          <span id="model-badge" class="badge" title="Model used by the AI agent">…</span>
+        </form>
+      </header>
+
       <main id="stage">
-        <canvas id="scene" aria-label="Procedural spider following your pointer"></canvas>
-        <div class="hud">
-          <div class="brand">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <div>
-              <h1>Spider XAI</h1>
-              <p id="hint">Move your pointer or drag a finger — the spider follows.</p>
-            </div>
-          </div>
-          <div class="hud-actions">
-            <button id="toggle-explain" class="btn btn-primary" aria-pressed="true" title="Toggle explain mode (E)">
-              <span class="dot"></span><span class="btn-label">Explain: on</span>
-            </button>
-            <button id="toggle-pause" class="btn" title="Pause / resume (Space)">Pause</button>
-          </div>
+        <canvas id="scene" aria-label="Crawl graph: the spider walks between pages of the site"></canvas>
+        <div id="stats" class="stats-ribbon" aria-live="polite"></div>
+        <div id="empty" class="empty-state">
+          <h2>Point the spider at a website</h2>
+          <p>Start with the <strong>Lab site</strong>: a fake community-garden website seeded with AI opt-outs, personal data and hidden prompt injections. Then try a real site, which the crawler handles politely and slowly.</p>
+          <button id="empty-start" class="btn btn-primary">Crawl the lab site</button>
+        </div>
+        <div class="legend">
+          <span><i class="lg lg-collected"></i>Collected</span>
+          <span><i class="lg lg-redacted"></i>PII redacted</span>
+          <span><i class="lg lg-quarantined"></i>Injection quarantined</span>
+          <span><i class="lg lg-skipped"></i>Consent: skipped</span>
+          <span><i class="lg lg-hijack"></i>Naive agent hijacked</span>
+          <span class="legend-tools">
+            <label class="check"><input id="speed" type="range" min="0.5" max="3" step="0.25" value="1" aria-label="Playback speed" /> Speed</label>
+            <label class="check"><input id="show-ik" type="checkbox" /> Leg IK</label>
+            <button id="skip-anim" class="btn btn-ghost btn-sm" type="button">Skip animation</button>
+          </span>
         </div>
       </main>
 
-      <aside id="panel" aria-label="Explain panel">
-        <section class="card">
-          <header class="card-head">
-            <h2>Decision state</h2>
-            <span id="active-group" class="pill pill-a">Group A active</span>
-          </header>
-          <div class="stats">
-            <div><span class="k">Body speed</span><span id="s-speed" class="v">0</span></div>
-            <div><span class="k">To pointer</span><span id="s-dist" class="v">0</span></div>
-            <div><span class="k">Step time</span><span id="s-dur" class="v">0</span></div>
-            <div><span class="k">Steps</span><span id="s-steps" class="v">0</span></div>
-            <div><span class="k">Gait switches</span><span id="s-switch" class="v">0</span></div>
-            <div><span class="k">Forced steps</span><span id="s-forced" class="v">0</span></div>
-          </div>
-          <p class="rule">
-            <strong>Policy:</strong> a leg steps when its foot drifts farther than the threshold (circle) from its rest
-            anchor (+), but only if its gait group is active. It lands slightly ahead of the anchor along the body's
-            velocity (◇). Groups swap once every foot is planted. Legs that overstretch or drift past 2.4× the threshold
-            step anyway.
-          </p>
-        </section>
-
-        <section class="card">
-          <header class="card-head">
-            <h2>Gait diagram</h2>
-            <span class="legend"><i class="sw sw-a"></i>A <i class="sw sw-b"></i>B</span>
-          </header>
-          <canvas id="gait" height="132" aria-label="Gait diagram: filled bars show when each leg is in the air"></canvas>
-          <p class="caption">Last ~4 s. Filled bars = foot in the air. Alternating diagonals form a tetrapod gait.</p>
-        </section>
-
-        <section class="card">
-          <header class="card-head"><h2>Parameters</h2><button id="reset" class="btn btn-ghost btn-sm">Reset</button></header>
-          <label class="slider">
-            <span>Step threshold <output id="o-threshold"></output></span>
-            <input id="threshold" type="range" min="10" max="90" step="1" />
-          </label>
-          <label class="slider">
-            <span>Max speed <output id="o-speed"></output></span>
-            <input id="speed" type="range" min="60" max="900" step="10" />
-          </label>
-          <label class="slider">
-            <span>Leg length <output id="o-legLength"></output></span>
-            <input id="legLength" type="range" min="40" max="160" step="1" />
-          </label>
-          <label class="slider">
-            <span>Time scale <output id="o-timeScale"></output></span>
-            <input id="timeScale" type="range" min="0.1" max="1" step="0.05" />
-          </label>
-          <div class="row">
-            <button id="step-frame" class="btn btn-sm" title="Advance one frame (.)">Step 1 frame</button>
-            <label class="check"><input id="show-labels" type="checkbox" checked /> Labels</label>
+      <aside id="panel">
+        <nav class="tabs" role="tablist">
+          <button role="tab" data-tab="receipt" aria-selected="true">Receipt</button>
+          <button role="tab" data-tab="policy">Site policy</button>
+          <button role="tab" data-tab="log">Log <span id="log-count" class="count"></span></button>
+          <button role="tab" data-tab="eval">Evaluation</button>
+        </nav>
+        <section id="tab-receipt" class="tab-body" role="tabpanel">
+          <div class="placeholder">
+            <h3>Decision receipts</h3>
+            <p>Every page the spider visits gets a receipt: which consent signals it checked, what personal data it redacted, which text was hidden from humans, and how a naive AI agent and a guarded one each reacted.</p>
+            <p>Click any node in the web to open its receipt.</p>
           </div>
         </section>
-
-        <section class="card">
-          <header class="card-head"><h2>Legs</h2><span class="caption">hover to inspect</span></header>
-          <table class="legs">
-            <thead><tr><th>Leg</th><th>Drift / thr</th><th>Hip</th><th>Knee</th><th>Why</th></tr></thead>
-            <tbody id="leg-rows"></tbody>
-          </table>
+        <section id="tab-policy" class="tab-body" role="tabpanel" hidden>
+          <div class="placeholder"><p>robots.txt, ai.txt and TDMRep policies appear here once a crawl starts.</p></div>
         </section>
-
-        <section class="card card-log">
-          <header class="card-head">
-            <h2>Decision log</h2>
-            <div class="row">
-              <label class="check"><input id="show-waits" type="checkbox" checked /> Holds</label>
-              <button id="clear-log" class="btn btn-ghost btn-sm">Clear</button>
-            </div>
-          </header>
-          <ol id="log" aria-live="off"></ol>
-          <p id="log-empty" class="empty">No decisions yet — move the pointer to make the spider walk.</p>
+        <section id="tab-log" class="tab-body" role="tabpanel" hidden>
+          <ol id="log"></ol>
+          <p id="log-empty" class="placeholder">No decisions yet.</p>
+        </section>
+        <section id="tab-eval" class="tab-body" role="tabpanel" hidden>
+          <div class="placeholder"><p>Loading evaluation…</p></div>
         </section>
       </aside>
     </div>

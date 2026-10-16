@@ -4,10 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -k -n api,web -c yellow,cyan \"tsx watch server/index.ts\" \"vite\"",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "server": "tsx server/index.ts",
+    "eval": "tsx bench/run.ts",
+    "audit": "tsx bench/ai-bot-audit.ts",
+    "start": "npm run build && tsx server/index.ts"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
