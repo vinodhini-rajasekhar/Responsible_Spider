@@ -53,7 +53,14 @@ export class Graph {
   callouts: Callout[] = [];
   cx = 0;
   cy = 0;
-  ring = 120;
+  rx = 200;
+  ry = 200;
+  maxDepth = 1;
+
+  /** Inner rings get proportionally more room: shallow pages are the most numerous. */
+  ringFactor(depth: number) {
+    return Math.pow(depth / this.maxDepth, 0.7);
+  }
 
   clear() {
     this.nodes.clear();
@@ -86,7 +93,9 @@ export class Graph {
     if (!this.root) return;
     let maxDepth = 1;
     for (const n of this.nodes.values()) maxDepth = Math.max(maxDepth, n.depth);
-    this.ring = Math.max(60, (Math.min(w, h) / 2 - 56) / maxDepth);
+    this.maxDepth = maxDepth;
+    this.rx = Math.max(80, w / 2 - 80);
+    this.ry = Math.max(80, h / 2 - 64);
     const leaves = new Map<string, number>();
     const count = (id: string): number => {
       const n = this.nodes.get(id)!;
@@ -99,9 +108,9 @@ export class Graph {
       const n = this.nodes.get(id)!;
       const a = (a0 + a1) / 2;
       const stagger = siblings > 24 ? (index % 3) * 0.13 - 0.13 : 0;
-      const r = n.depth === 0 ? 0 : this.ring * (n.depth + stagger);
-      n.tx = this.cx + Math.cos(a) * r;
-      n.ty = this.cy + Math.sin(a) * r;
+      const f = n.depth === 0 ? 0 : this.ringFactor(n.depth) * (1 + stagger * 0.5);
+      n.tx = this.cx + Math.cos(a) * this.rx * f;
+      n.ty = this.cy + Math.sin(a) * this.ry * f;
       let start = a0;
       const total = leaves.get(id)!;
       n.children.forEach((k, i) => {
@@ -136,8 +145,6 @@ export class Graph {
 
   drawWeb(ctx: CanvasRenderingContext2D, w: number, h: number) {
     if (!this.root) return;
-    let maxDepth = 1;
-    for (const n of this.nodes.values()) maxDepth = Math.max(maxDepth, n.depth);
     const spokes = 16;
     const outer = Math.hypot(w, h) / 2;
     ctx.strokeStyle = 'rgba(226, 232, 240, 0.05)';
@@ -148,12 +155,13 @@ export class Graph {
       ctx.moveTo(this.cx, this.cy);
       ctx.lineTo(this.cx + Math.cos(a) * outer, this.cy + Math.sin(a) * outer);
     }
-    for (let d = 1; d <= maxDepth + 1; d++) {
+    const rings = [0.33, ...Array.from({ length: this.maxDepth }, (_, k) => this.ringFactor(k + 1)), 1.2];
+    for (const [d, f] of rings.entries()) {
       for (let i = 0; i <= spokes; i++) {
         const a = (i / spokes) * Math.PI * 2;
-        const r = this.ring * d * (1 + 0.03 * Math.sin(i * 1.7 + d));
-        const x = this.cx + Math.cos(a) * r;
-        const y = this.cy + Math.sin(a) * r;
+        const wob = 1 + 0.03 * Math.sin(i * 1.7 + d);
+        const x = this.cx + Math.cos(a) * this.rx * f * wob;
+        const y = this.cy + Math.sin(a) * this.ry * f * wob;
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }

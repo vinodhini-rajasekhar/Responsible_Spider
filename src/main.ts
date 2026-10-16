@@ -51,7 +51,7 @@ function resize() {
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  params.legLength = Math.round(Math.max(30, Math.min(48, Math.min(width, height) * 0.06)));
+  params.legLength = Math.round(Math.max(30, Math.min(56, Math.min(width, height) * 0.065)));
   params.threshold = Math.round(params.legLength * 0.42);
   spider.layout(params);
   graph.layout(width, height);
@@ -257,7 +257,7 @@ function frame(now: number) {
 
   drawBackground(ctx, width, height);
   graph.drawWeb(ctx, width, height);
-  graph.draw(ctx, now, { selected, hovered, inspecting, showAllLabels: graph.nodes.size <= 30 });
+  graph.draw(ctx, now, { selected, hovered, inspecting, showAllLabels: graph.nodes.size <= (width < 600 ? 0 : 30) });
   if (showIK) drawOverlayUnder(ctx, spider, p, target, null);
   drawSpider(ctx, spider, null);
   if (showIK) drawOverlayOver(ctx, spider, p, null);
