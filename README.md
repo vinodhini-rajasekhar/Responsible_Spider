@@ -1,52 +1,109 @@
-# Spider XAI
+# Responsible Spider
 
-An interactive procedural spider that follows your pointer, with an **Explain** layer that shows every decision the locomotion "agent" makes as it happens. It's built for an Explainable AI project. The goal is to show that even a hand-written controller is easier to trust once its targets, thresholds and arbitration rules are visible.
+**An explainable AI web crawler that shows you, page by page, what it takes, what it refuses, and what tried to hijack it.**
 
-Inspired by the viral cursor-following spider demo by [@rybinfx](https://x.com/rybinfx) (Slava Rybin). This is an original implementation: none of his code is used.
+AI companies build datasets and power "browse the web for me" agents with scrapers. Those scrapers are usually invisible. Nobody can see whether they honoured a site's opt-out, swept up someone's phone number, or obeyed a sentence hidden in white-on-white text that told the AI to lie. Responsible Spider makes all of that visible.
 
-## What you can see
+An animated spider walks a live map of a website. At each page it stops, checks it, and produces a **decision receipt**:
 
-- **Body steering**: the spider moves toward the mouse or touch point and slows down as it arrives. Its velocity is drawn as an arrow.
-- **8 legs with two-bone IK**: each leg is solved with the law of cosines, and the knee always bows away from the body. Knee angles are drawn live, and an angle turns red when the leg is clamped at full reach.
-- **Foot anchors and step thresholds**: every foot has a rest anchor (+) and a threshold circle. Once the foot drifts outside the circle, it wants to step. It lands ahead of the anchor along the velocity (◇), which buys it stance time.
-- **Alternating tetrapod gait**: group A (L1, R2, L3, R4) and group B (R1, L2, R3, L4) take turns. Only the active group may step, and the groups swap only when every foot is planted. Safety overrides force a step if a leg overstretches or drifts more than 2.4× the threshold.
-- **Explain panel**:
-  - live stats
-  - a scrolling gait diagram
-  - a per-leg table showing drift against threshold, hip and knee angles, and a plain-English reason for each leg's state ("Held: over threshold, waiting for group B")
-  - a decision log, for example `Leg L2 stepped: drift 42px > threshold 35px, group A active`
-- **Parameters**: threshold, max speed, leg length and time scale, plus pause and single-frame stepping. Use them to watch how the parameters change behaviour. For example, a threshold larger than the leg's slack produces forced "overstretched" steps.
+| Layer | What it checks | What it does |
+|---|---|---|
+| **Consent** | robots.txt (for itself *and* for AI-training bots such as GPTBot, CCBot, ClaudeBot and Google-Extended), `noai` / `noimageai`, TDMRep (`tdm-reservation`, `/.well-known/tdmrep.json`), `ai.txt`, licences and copyright notices | Never fetches opted-out pages, or discards them if the opt-out is only discoverable after fetching |
+| **Privacy** | Emails, phone numbers, SSNs, Luhn-valid card numbers, IP addresses | Redacts them before storage or model input |
+| **Security** | Text hidden from humans (display:none, white-on-white, zero font, off-screen, comments, alt text, `<noscript>`…), plus instruction-like text aimed at AI | Drops hidden text, quarantines likely prompt injections, and spotlights the rest as untrusted data |
+| **Politeness** | Crawl-delay, `nofollow`, request rate | Waits and doesn't follow links when asked |
 
-Hover a row in the leg table to highlight that leg and show its reach circle and hip angle.
+Every page is also summarised by two AI agents side by side. A **naive agent** reads the page the way most scrapers do: all text, hidden or not. A **guarded agent** reads it through the layers above. When the naive one gets hijacked, a **leave-one-out causal explanation** re-runs it without each suspicious segment and pinpoints which piece of hidden text caused the hijack.
 
-Keyboard: `E` toggles Explain, `Space` pauses, `.` advances one frame.
+> Built for a Responsible AI course final project (XAI, adversarial AI, AI governance). See [`docs/research.md`](docs/research.md) for the research questions, literature, method and results.
 
-## Run it locally
+![Crawl in progress](docs/img/crawl.png)
 
-Requires Node 20+.
+## Quick start
+
+Requires **Node 20+**.
 
 ```bash
 npm install
-npm run dev        # http://localhost:5317
+cp .env.example .env        # optional: add your OpenAI key for real model runs
+npm run dev
 ```
 
-Other scripts:
+Then open **http://localhost:5317** and click **Crawl the lab site**.
+
+`npm run dev` starts three things:
+
+| Port | What |
+|---|---|
+| 5317 | Web UI (Vite) |
+| 5319 | Crawler API (Express, server-sent events) |
+| 5320 | **Willow Creek lab site**: a fake community-garden website with its own robots.txt, ai.txt and TDMRep file, booby-trapped with opt-outs, personal data and nine kinds of hidden prompt injection |
+
+### OpenAI key (optional but recommended)
+
+Put `OPENAI_API_KEY=sk-...` in `.env` (and optionally `OPENAI_MODEL`, default `gpt-4o-mini`). Without a key, a **simulated model** stands in. It is deliberately gullible: it obeys any explicit instruction it is given, so the pipeline and UI are fully demoable offline. The UI labels it "Simulated model" everywhere. Simulated results show what the defence *filters*. They are **not** evidence about how real LLMs behave.
+
+## Using it
+
+- **Lab site**: the default seed. Turn on **Naive comparison** to also shadow-fetch opted-out pages and show what a consent-blind scraper would have taken. This is only allowed on the lab origin, never on real sites.
+- **Benchmark**: crawls all 89 benchmark pages so you can watch the detector work at scale.
+- **Any URL**: the crawler stays on the same origin, identifies itself honestly as `ResponsibleSpider/1.0`, waits at least 1s between requests (more if the site sets Crawl-delay), and is capped at 40 pages.
+- Click any node, or any log entry, to open its receipt. In a receipt, **Explain causally** runs the leave-one-out attribution.
+- **Site policy** shows the site's robots.txt rules for 12 known AI crawlers, plus its ai.txt and TDMRep files.
+- **Evaluation** shows the latest benchmark results.
+
+## Evaluation
 
 ```bash
-npm run build      # type-check + production build into dist/
-npm run preview    # serve the build on http://localhost:5318
+npm run eval                 # 89-page injection benchmark (uses your OpenAI key if set)
+npm run eval -- --no-agent   # detector only, no model calls
+npm run audit                # real-world robots.txt audit of 49 popular sites
 ```
+
+Results are written to `bench/results/` as JSON and Markdown, and the Evaluation tab reads them.
+
+**Real-world audit (robots.txt, 16 Oct 2026):** 29 of 44 reachable popular sites (66%) block at least one AI crawler from their homepage. All 9 news sites do. 19 sites block GPTBot while still allowing Googlebot: "search yes, AI training no". Full table: [`bench/results/ai-bot-audit.md`](bench/results/ai-bot-audit.md).
+
+**Benchmark (simulated model):** detector precision 99%, recall 89%, false-positive rate 13% on benign pages. Naive agent attack success 89%, guarded 0%. Every missed attack is the "subtle visible phrasing" technique, and the one false positive is a benign article *about* prompt injection. Real-model numbers come from running `npm run eval` with your key; see [`docs/research.md`](docs/research.md#results).
 
 ## Project layout
 
 ```
-src/
-  ik.ts        two-bone IK solver + vector helpers
-  spider.ts    body steering, step policy, gait arbitration, decision events
-  render.ts    spider + background drawing
-  overlay.ts   explain overlay (thresholds, targets, drift, angles)
-  panel.ts     side panel: stats, gait diagram, leg table, decision log
-  main.ts      canvas setup, input, controls, animation loop
+server/
+  index.ts              API (5319) + lab site (5320)
+  crawler.ts            BFS crawl, decisions, streaming events
+  llm.ts                naive vs guarded agents, simulated model, leave-one-out ablation
+  analyze/
+    consent.ts          robots.txt / AI bots / ai.txt / TDMRep / noai / licence checks
+    extract.ts          page → text segments + why each is (in)visible to humans
+    injection.ts        transparent, weighted prompt-injection signals
+    pii.ts              PII detection + redaction
+  lab/
+    site.ts             Willow Creek demo site
+    templates.ts        articles + 9 hiding techniques
+    payloads.ts         3 attacker goals with output detectors
+    bench.ts            89-case benchmark generator
+src/                    UI: canvas web graph + procedural spider + receipt panels
+  graph.ts              radial "spider web" layout and drawing
+  spider.ts, ik.ts      procedural spider (2-bone IK legs, tetrapod gait)
+  receipt.ts, panels.ts receipts, site policy, log, evaluation views
+shared/types.ts         types shared by server and UI
+bench/                  run.ts (benchmark), ai-bot-audit.ts, sites.csv, results/
+docs/research.md        research framing, literature, method, results, limitations
 ```
 
-Stack: Vite + TypeScript, plain Canvas 2D and CSS, with no runtime dependencies.
+## Known limitations
+
+- **Static visibility analysis.** Hidden text is detected from inline styles and simple `<style>` rules, not a real rendering engine. External stylesheets, the full cascade and JavaScript-rendered content are missed. A headless-browser pass would close most of this gap.
+- **The heuristic detector can be evaded.** Injections phrased without trigger words get through (0% detected in the benchmark), and articles *about* injection get flagged. The detector is transparent by design, and its failures are part of what the project shows.
+- **Opt-out signals are fragmented and voluntary.** robots.txt was built for search, not AI. `ai.txt`, `noai` and TDMRep have patchy adoption, and none of them is technically enforced.
+- **Simulated results are circular.** The stand-in model obeys roughly the same patterns the detector looks for. Use a real model for real conclusions.
+- **Small, synthetic benchmark.** It has 89 pages, 3 articles, 3 attacker goals and 9 techniques. Real attacks are more varied, and adaptive attackers would target the detector directly.
+
+## Responsible use
+
+The crawler is meant for research and education. It is rate-limited, origin-bound, identifies itself honestly, and refuses to shadow-fetch opted-out pages on any site except the bundled lab. Don't remove those guardrails to crawl sites that have said no. The lab site's attack pages are synthetic, and their "phishing" domain uses the reserved `.example` TLD.
+
+## Credits
+
+The procedural spider animation is inspired by Slava Rybin's ([@rybinfx](https://x.com/rybinfx)) cursor-following spider; this is an original implementation. Built with Vite, TypeScript, Canvas 2D, Express, cheerio and robots-parser.
