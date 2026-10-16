@@ -66,6 +66,10 @@ Results are written to `bench/results/` as JSON and Markdown, and the Evaluation
 
 **Benchmark (simulated model):** detector precision 99%, recall 89%, false-positive rate 13% on benign pages. Naive agent attack success 89%, guarded 0%. Every missed attack is the "subtle visible phrasing" technique, and the one false positive is a benign article *about* prompt injection. Real-model numbers come from running `npm run eval` with your key; see [`docs/research.md`](docs/research.md#results).
 
+## Poster
+
+`poster/poster.html` is a 36×24-inch poster built from live screenshots. `poster/responsible-spider-poster.pdf` is the exported draft. To re-export after editing, open the HTML in Chrome, choose Print, set the paper size to 36×24 in with margins "None" and background graphics on, then save as PDF.
+
 ## Project layout
 
 ```
