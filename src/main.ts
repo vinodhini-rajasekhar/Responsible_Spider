@@ -51,8 +51,8 @@ function resize() {
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  params.legLength = Math.round(Math.max(30, Math.min(56, Math.min(width, height) * 0.065)));
-  params.threshold = Math.round(params.legLength * 0.42);
+  params.legLength = Math.round(Math.max(36, Math.min(64, Math.min(width, height) * 0.075)));
+  params.threshold = Math.round(params.legLength * 0.4);
   spider.layout(params);
   graph.layout(width, height);
   if (first) {
@@ -257,13 +257,14 @@ function frame(now: number) {
       }
     }
   } else if (!graph.root) {
-    idleT += dt;
-    const r = Math.min(width, height) * 0.22;
-    target.x = width / 2 + Math.sin(idleT * 0.5) * r;
-    target.y = height / 2 + Math.sin(idleT * 0.8 + 1) * r * 0.6;
+    // Slow figure-eight so idle legs stay readable (not a frantic scribble).
+    idleT += dt * 0.35;
+    const r = Math.min(width, height) * 0.14;
+    target.x = width / 2 + Math.sin(idleT) * r;
+    target.y = height / 2 + Math.sin(idleT * 2) * r * 0.45;
   }
 
-  const p = { ...params, speed: params.speed * speedMul };
+  const p = { ...params, speed: (graph.root ? params.speed : params.speed * 0.45) * speedMul };
   spider.update(dt, target, p);
 
   drawBackground(ctx, width, height);

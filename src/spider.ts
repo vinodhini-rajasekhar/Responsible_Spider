@@ -55,9 +55,10 @@ const GROUP_OF: Record<string, Group> = {
   R1: 'B', L2: 'B', R3: 'B', L4: 'B',
 };
 
-const HIP_X = [9, 4, -1, -6];
-const REST_ANGLE_DEG = [38, 78, 112, 148];
-const LEN_MULT = [1.05, 0.95, 0.92, 1.0];
+// Hips sit on the cephalothorax rim; angles fan front→rear like a real spider.
+const HIP_X = [10, 5, 0, -5];
+const REST_ANGLE_DEG = [28, 68, 112, 155];
+const LEN_MULT = [1.12, 1.0, 0.98, 1.08];
 const OVERSTRETCH = 0.97;
 const FORCE_FACTOR = 2.4;
 
@@ -98,16 +99,17 @@ export class Spider {
   /** Recompute leg geometry from the leg-length parameter. */
   layout(params: Params) {
     const L = params.legLength;
-    const s = (this.scale = L / 72);
+    const s = (this.scale = L / 68);
     for (const leg of this.legs) {
       const i = leg.index;
       const m = LEN_MULT[i];
-      leg.upper = L * 0.62 * m;
-      leg.lower = L * 0.7 * m;
+      // Slightly longer lower segment → stronger knee arch, less “bug stick” look.
+      leg.upper = L * 0.55 * m;
+      leg.lower = L * 0.78 * m;
       const a = (REST_ANGLE_DEG[i] * Math.PI) / 180;
-      const r = L * 0.74 * m;
-      leg.hipLocal = vec(HIP_X[i] * s, leg.side * 5 * s);
-      leg.restLocal = vec(leg.hipLocal.x + Math.cos(a) * r, leg.side * (5 * s + Math.sin(a) * r));
+      const r = L * 0.78 * m;
+      leg.hipLocal = vec(HIP_X[i] * s, leg.side * 6.5 * s);
+      leg.restLocal = vec(leg.hipLocal.x + Math.cos(a) * r, leg.side * (6.5 * s + Math.sin(a) * r));
     }
   }
 
