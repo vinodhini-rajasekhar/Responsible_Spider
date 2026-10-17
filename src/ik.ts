@@ -29,8 +29,15 @@ export interface IKResult {
 /**
  * Analytic two-bone IK via the law of cosines. Of the two mirror solutions,
  * the knee farthest from `away` is chosen so knees always bow out from the body.
+ * Pass a scoring function instead to pick the knee with the higher score.
  */
-export function solveTwoBone(hip: Vec, foot: Vec, upper: number, lower: number, away: Vec): IKResult {
+export function solveTwoBone(
+  hip: Vec,
+  foot: Vec,
+  upper: number,
+  lower: number,
+  away: Vec | ((knee: Vec) => number),
+): IKResult {
   const dx = foot.x - hip.x;
   const dy = foot.y - hip.y;
   const raw = Math.hypot(dx, dy);
@@ -48,7 +55,8 @@ export function solveTwoBone(hip: Vec, foot: Vec, upper: number, lower: number, 
   const a2 = base - hipOffset;
   const k1 = { x: hip.x + Math.cos(a1) * upper, y: hip.y + Math.sin(a1) * upper };
   const k2 = { x: hip.x + Math.cos(a2) * upper, y: hip.y + Math.sin(a2) * upper };
-  const pickFirst = dist(k1, away) >= dist(k2, away);
+  const score = typeof away === 'function' ? away : (k: Vec) => dist(k, away);
+  const pickFirst = score(k1) >= score(k2);
 
   return {
     knee: pickFirst ? k1 : k2,
