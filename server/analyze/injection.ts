@@ -13,7 +13,11 @@ const SIGNALS: Signal[] = [
   { name: 'override: "ignore previous instructions"', weight: 0.75, re: /\b(ignore|disregard|forget|override)\b[^.]{0,40}\b(previous|prior|above|earlier|all|your|system)\b[^.]{0,20}\b(instructions?|prompts?|rules|directions)\b/i },
   { name: 'addresses an AI system directly', weight: 0.45, re: /\b(AI|LLM|language model|assistant|chatbot|summari[sz]er|GPT|agent|crawler|model)s?\b[^.]{0,30}\b(must|should|need to|are required|are instructed|reading this|processing this)\b/i },
   { name: 'note/attention aimed at AI readers', weight: 0.5, re: /\b(note|attention|message|instructions?)\s+(to|for)\s+(any\s+|all\s+)?(AI|LLM|assistants?|language models?|bots?|crawlers?|agents?)\b/i },
-  { name: 'role reassignment ("you are now")', weight: 0.5, re: /\byou are (now|no longer)\b|\bact as\b|\bpretend (to be|you are)\b|\bnew (role|persona)\b/i },
+  // Split: bare "act as" is common English ("act as a counterpoint") and must not
+  // quarantine alone. Stronger role phrases keep a higher weight.
+  { name: 'role reassignment ("you are now")', weight: 0.5, re: /\byou are (now|no longer)\b/i },
+  { name: 'role play ("act as" / "pretend")', weight: 0.3, re: /\bact as\b|\bpretend (to be|you are)\b|\bnew (role|persona)\b/i },
+  { name: 'role play aimed at an AI', weight: 0.45, re: /\bact as\b[^.]{0,40}\b(AI|assistant|chatbot|language model|LLM|GPT|agent|system)\b|\bpretend (to be|you are)\b[^.]{0,40}\b(AI|assistant|chatbot|helpful|unrestricted)\b/i },
   { name: 'fake system/assistant turn', weight: 0.55, re: /(^|\n|\s)(system|assistant|developer)\s*:|<\/?(system|instructions?)>|\[\/?INST\]|<\|im_start\|>/i },
   { name: 'output steering ("respond with", "say")', weight: 0.4, re: /\b(respond|reply|answer|output|say|write|begin your (response|summary))\b[^.]{0,25}\b(with|only|exactly|that|the (phrase|word|text))\b/i },
   { name: 'secrecy demand ("do not tell the user")', weight: 0.6, re: /\b(do not|don't|never)\b[^.]{0,20}\b(tell|mention|reveal|inform|disclose)\b[^.]{0,20}\b(user|reader|human|anyone)\b/i },
