@@ -2,167 +2,210 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Responsible Spider — poster</title>
+<title>Responsible Spider — 24×36 Expo poster</title>
 <style>
+  /* Print on 24×36" satin photo paper in LANDSCAPE (36" wide × 24" tall). */
   @page { size: 36in 24in; margin: 0; }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
-    width: 36in; height: 24in; overflow: hidden;
-    background: #0d0f13; color: #e7e3da;
-    font-family: Inter, 'Helvetica Neue', Arial, sans-serif; font-size: 26px; line-height: 1.36;
+    width: 36in; height: 24in; overflow: hidden; position: relative;
+    background: #0c0e12; color: #ebe6dc;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 28px; line-height: 1.38;
     -webkit-print-color-adjust: exact; print-color-adjust: exact;
   }
   header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 56px 100px 40px; border-bottom: 3px solid rgba(255,255,255,.1);
+    display: grid; grid-template-columns: 1fr auto; gap: 40px;
+    align-items: end; padding: 48px 80px 36px;
+    border-bottom: 4px solid rgba(255,255,255,.1);
+    background: linear-gradient(180deg, #141820 0%, #0c0e12 100%);
   }
-  h1 { font-size: 140px; margin: 0; letter-spacing: -2px; line-height: 1; }
-  .sub { font-size: 48px; color: #b8bcc6; margin-top: 18px; max-width: 2300px; }
-  .who { text-align: right; font-size: 34px; color: #8b919c; }
-  .who b { color: #e7e3da; display: block; font-size: 40px; }
-  .mark { width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#4ade80 0 25%, #facc15 0 50%, #f87171 0 75%, #64748b 0); margin-right: 50px; flex: none; }
-  .brand { display: flex; align-items: center; }
-  main { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 50px; padding: 46px 100px; height: calc(24in - 350px); }
-  .col { display: flex; flex-direction: column; gap: 34px; min-height: 0; }
-  section { background: #161a21; border: 2px solid rgba(255,255,255,.08); border-radius: 28px; padding: 32px 40px; }
-  h2 { font-size: 46px; margin: 0 0 20px; letter-spacing: .5px; }
-  h2 small { color: #8b919c; font-weight: 500; font-size: 30px; margin-left: 12px; }
-  p { margin: 0 0 16px; }
-  ul { margin: 0; padding-left: 36px; }
+  .brand { display: flex; gap: 36px; align-items: center; }
+  .mark {
+    width: 96px; height: 96px; border-radius: 50%; flex: none;
+    background: conic-gradient(#4ade80 0 25%, #facc15 0 50%, #f87171 0 75%, #64748b 0);
+    box-shadow: 0 0 0 8px rgba(255,255,255,.06);
+  }
+  h1 { margin: 0; font-size: 118px; letter-spacing: -3px; line-height: 0.95; }
+  .tagline { margin: 14px 0 0; font-size: 40px; color: #b7bdc8; max-width: 22in; font-weight: 500; }
+  .meta { text-align: right; font-size: 30px; color: #8b919c; line-height: 1.45; }
+  .meta b { display: block; color: #ebe6dc; font-size: 38px; margin-bottom: 6px; }
+  .meta a { color: #a5b4fc; text-decoration: none; font-size: 26px; }
+
+  main {
+    display: grid; grid-template-columns: 1fr 1.35fr 1fr; gap: 36px;
+    padding: 36px 80px 70px; height: calc(24in - 280px);
+  }
+  .col { display: flex; flex-direction: column; gap: 28px; min-height: 0; }
+  section {
+    background: #151920; border: 2px solid rgba(255,255,255,.08);
+    border-radius: 24px; padding: 28px 32px; flex: 0 0 auto;
+  }
+  section.grow { flex: 1 1 auto; min-height: 0; }
+  h2 {
+    margin: 0 0 16px; font-size: 34px; letter-spacing: 0.04em;
+    text-transform: uppercase; color: #9aa3b2; font-weight: 700;
+  }
+  h2 .num {
+    display: inline-block; width: 42px; height: 42px; line-height: 42px;
+    text-align: center; border-radius: 10px; margin-right: 12px;
+    background: #a5b4fc; color: #0c0e12; font-size: 28px; vertical-align: middle;
+  }
+  p { margin: 0 0 12px; }
+  ul { margin: 0; padding-left: 34px; }
   li { margin-bottom: 10px; }
-  .k { color: #8b919c; }
-  .good { color: #4ade80; } .warn { color: #facc15; } .bad { color: #f87171; } .skip { color: #94a3b8; }
-  .rq { border-left: 8px solid #a5b4fc; padding-left: 24px; margin-bottom: 18px; }
-  .rq b { color: #a5b4fc; }
-  .shot { width: 100%; border-radius: 18px; border: 2px solid rgba(255,255,255,.1); display: block; object-fit: cover; }
-  .receipt-row { display: grid; grid-template-columns: 560px 1fr; gap: 30px; align-items: start; }
-  .caption { font-size: 24px; color: #8b919c; margin-top: 10px; }
-  .layers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 10px; }
-  .layer { border-radius: 18px; padding: 16px 18px; background: rgba(255,255,255,.03); border-top: 8px solid; font-size: 23px; line-height: 1.3; }
-  .layer b { display: block; font-size: 30px; margin-bottom: 6px; }
-  .big { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .stat { background: rgba(255,255,255,.03); border-radius: 18px; padding: 22px 26px; }
-  .stat b { font-size: 72px; display: block; line-height: 1; font-family: 'SF Mono', Menlo, monospace; }
-  .stat span { font-size: 25px; color: #b8bcc6; }
-  table { width: 100%; border-collapse: collapse; font-size: 25px; }
-  th { text-align: left; color: #8b919c; font-weight: 500; padding: 8px 6px; }
-  td { padding: 8px 6px; border-top: 1px solid rgba(255,255,255,.08); }
-  td.n { font-family: 'SF Mono', Menlo, monospace; text-align: right; }
-  .placeholder { color: #facc15; font-style: italic; }
-  .flow { display: flex; align-items: center; gap: 14px; font-size: 26px; flex-wrap: wrap; margin-top: 8px; }
-  .flow span { background: rgba(255,255,255,.05); border-radius: 12px; padding: 10px 16px; }
-  .flow i { color: #8b919c; font-style: normal; }
-  footer { position: absolute; bottom: 30px; left: 100px; right: 100px; font-size: 22px; color: #6b7280; display: flex; justify-content: space-between; }
+  .good { color: #4ade80; } .warn { color: #facc15; } .bad { color: #f87171; } .muted { color: #9aa3b2; }
+  .pill {
+    display: inline-block; font-size: 24px; font-weight: 700; padding: 6px 14px;
+    border-radius: 999px; margin: 0 8px 10px 0; border: 2px solid currentColor;
+  }
+  .pill-aud { color: #a5b4fc; }
+  .pill-dom { color: #2dd4bf; }
+
+  .callout {
+    border-left: 10px solid #a5b4fc; padding: 8px 0 8px 22px;
+    font-size: 32px; font-weight: 600; margin: 14px 0 4px;
+  }
+  .shot {
+    width: 100%; border-radius: 16px; border: 2px solid rgba(255,255,255,.12);
+    display: block; object-fit: cover;
+  }
+  .caption { font-size: 23px; color: #8b919c; margin-top: 10px; line-height: 1.35; }
+
+  .layers { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+  .layer {
+    border-radius: 16px; padding: 16px 18px; background: rgba(255,255,255,.03);
+    border-top: 7px solid; font-size: 24px; line-height: 1.3;
+  }
+  .layer b { display: block; font-size: 28px; margin-bottom: 4px; color: #ebe6dc; }
+
+  .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .kpi { background: rgba(255,255,255,.035); border-radius: 16px; padding: 18px 20px; }
+  .kpi b {
+    display: block; font-size: 68px; line-height: 1;
+    font-family: 'SF Mono', Menlo, Consolas, monospace; margin-bottom: 6px;
+  }
+  .kpi span { font-size: 24px; color: #b7bdc8; display: block; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 24px; margin-top: 8px; }
+  th { text-align: left; color: #8b919c; font-weight: 600; padding: 6px 4px; font-size: 22px; }
+  td { padding: 8px 4px; border-top: 1px solid rgba(255,255,255,.08); }
+  td.n { font-family: 'SF Mono', Menlo, monospace; text-align: right; font-weight: 700; }
+
+  .contrib {
+    display: grid; grid-template-columns: 48px 1fr; gap: 12px 16px; align-items: start;
+    font-size: 26px;
+  }
+  .contrib i {
+    width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+    font-style: normal; font-weight: 800; font-size: 22px; color: #0c0e12;
+  }
+  .c1 { background: #4ade80; } .c2 { background: #facc15; } .c3 { background: #f87171; } .c4 { background: #a5b4fc; }
+
+  footer {
+    position: absolute; left: 80px; right: 80px; bottom: 22px;
+    font-size: 22px; color: #6b7280; display: flex; justify-content: space-between; gap: 24px;
+  }
+  footer code { color: #9aa3b2; }
 </style>
 </head>
 <body>
+
 <header>
   <div class="brand">
-    <div class="mark"></div>
+    <div class="mark" aria-hidden="true"></div>
     <div>
       <h1>Responsible Spider</h1>
-      <div class="sub">An explainable AI web crawler that shows — page by page — what it takes, what it refuses, and what tried to hijack it.</div>
+      <p class="tagline">An explainable AI web crawler that shows what it takes, what it refuses, and what tried to hijack it.</p>
     </div>
   </div>
-  <div class="who"><b>Your Name</b>Responsible AI · Final Project · Fall 2026</div>
+  <div class="meta">
+    <b>Vinodhini Rajasekhar</b>
+    Responsible AI · Final Project · Fall 2026<br>
+    <a href="https://github.com/vinodhini-rajasekhar/Responsible_Spider">github.com/vinodhini-rajasekhar/Responsible_Spider</a>
+  </div>
 </header>
 
 <main>
+  <!-- ========== RUBRIC: motivation / problem / audience / domain ========== -->
   <div class="col">
     <section>
-      <h2>The problem</h2>
-      <p>AI models are trained on scraped web data, and AI agents now browse the web for us. Both rely on <b>scrapers nobody can see</b>.</p>
+      <h2><span class="num">1</span>Why this matters</h2>
+      <p><span class="pill pill-aud">Audience: auditors, developers, educators</span>
+         <span class="pill pill-dom">Domain: AI web scraping &amp; agents</span></p>
+      <p>Modern AI is fed by <b>web scrapers</b> — for training data and for “browse for me” agents. Those scrapers are usually invisible.</p>
+      <div class="callout">Responsible AI need: make crawler decisions auditable.</div>
       <ul>
-        <li><b>Consent:</b> did it honour the site's AI opt-out? Signals are fragmented: robots.txt, <code>noai</code>, ai.txt, TDMRep. Since 2024 the EU AI Act (Art. 53) obliges general-purpose model providers to respect them.</li>
-        <li><b>Security:</b> pages can hide instructions in text humans never see (<i>indirect prompt injection</i>, Greshake et al. 2023) and hijack the agent.</li>
+        <li><b>Consent:</b> Did it honour the site’s AI opt-out? Signals are fragmented (<code>robots.txt</code> for GPTBot/CCBot, <code>noai</code>, ai.txt, TDMRep). The EU AI Act (Art. 53) now expects providers to respect them.</li>
+        <li><b>Security:</b> Pages can hide instructions humans never see (<i>indirect prompt injection</i>) and hijack an AI summariser.</li>
+        <li><b>Privacy:</b> Scrapers can quietly collect emails, phones, and other personal data.</li>
       </ul>
-      <p style="margin-top:16px">Both come from the same gap: <b>what a human sees vs. what a machine takes.</b></p>
+      <p class="muted" style="margin-top:12px;margin-bottom:0">Root gap: <b style="color:#ebe6dc">what a human sees on the page vs. what a machine takes from the HTML.</b></p>
     </section>
-    <section>
-      <h2>Research questions</h2>
-      <div class="rq"><b>RQ1 Consent.</b> How common are AI opt-outs, and how much would a consent-blind scraper take anyway?</div>
-      <div class="rq"><b>RQ2 Security.</b> How well do hidden-text injections hijack an LLM agent, and what does a transparent, layered defence cost?</div>
-      <div class="rq"><b>RQ3 Explainability.</b> Can per-page decision receipts make crawler behaviour auditable by non-experts?</div>
-    </section>
-    <section>
-      <h2>Real web: who says "no" to AI? <small>robots.txt, 44 popular sites</small></h2>
-      <div class="big">
-        <div class="stat"><b class="warn">66%</b><span>block ≥1 AI crawler</span></div>
-        <div class="stat"><b class="warn">9/9</b><span>news sites block AI crawlers</span></div>
-        <div class="stat"><b>19</b><span>block GPTBot <i>but allow Google search</i></span></div>
-        <div class="stat"><b>57%</b><span>block CCBot (Common Crawl)</span></div>
-      </div>
-      <p class="caption">Collected 16 Oct 2026 by <code>npm run audit</code>, which fetches only /robots.txt. 5 of 49 sites were unreachable.</p>
-    </section>
-  </div>
 
-  <div class="col">
-    <section>
-      <h2>What I built</h2>
-      <img class="shot" style="height:560px;object-position:center 45%" src="../docs/img/poster-stage.png" alt="Crawl in progress">
-      <p class="caption">The spider walks a live "web" of the site, stops at each page, decides and explains: <span class="good">collected</span>, <span class="warn">PII redacted</span>, <span class="bad">injection quarantined</span>, <span class="skip">skipped (no consent)</span>. A dashed ring marks pages where the naive agent was hijacked.</p>
+    <section class="grow">
+      <h2><span class="num">2</span>What I built</h2>
+      <p>An interactive tool + research artifact: a procedural <b>spider walks a live map</b> of a website. At each page it stops and opens a <b>decision receipt</b>.</p>
       <div class="layers">
-        <div class="layer" style="border-color:#4ade80"><b>Consent</b>robots.txt for itself <i>and</i> 12 AI bots · noai · TDMRep · ai.txt · licence</div>
-        <div class="layer" style="border-color:#facc15"><b>Privacy</b>Emails, phones, SSNs, card numbers (Luhn), IPs → redacted</div>
-        <div class="layer" style="border-color:#f87171"><b>Security</b>Hidden-text detection (9 techniques) + transparent injection scorer → quarantine</div>
-        <div class="layer" style="border-color:#94a3b8"><b>Politeness</b>Crawl-delay, nofollow, honest user-agent, rate limits</div>
+        <div class="layer" style="border-color:#4ade80"><b>Consent</b>robots.txt · AI bots · noai · TDMRep · ai.txt · licences</div>
+        <div class="layer" style="border-color:#facc15"><b>Privacy</b>Emails, phones, SSNs, cards, IPs → redacted</div>
+        <div class="layer" style="border-color:#f87171"><b>Security</b>9 hidden-text tricks + transparent injection scorer → quarantine</div>
+        <div class="layer" style="border-color:#a5b4fc"><b>Explain (XAI)</b>Naive vs responsible · naive vs guarded agent · causal ablation</div>
       </div>
+      <p style="margin-top:16px;margin-bottom:0" class="muted">Intended contribution: a <b style="color:#ebe6dc">unified, explainable crawler</b> for consent + prompt-injection defence — not just a scraper, and not just a spider animation.</p>
     </section>
-    <section>
-      <h2>Every page gets an explainable receipt</h2>
-      <div class="receipt-row">
-        <img class="shot" style="height:630px;object-position:top" src="../docs/img/poster-receipt.png" alt="Decision receipt with naive vs guarded agent and causal explanation">
-        <ul>
-          <li><b>Contrastive:</b> naive scraper vs. responsible spider; naive agent vs. guarded agent (Miller 2019).</li>
-          <li><b>Evidence-bearing:</b> the exact robots.txt line, meta tag or CSS hiding trick behind each decision.</li>
-          <li><b>Causal:</b> leave-one-out ablation re-runs the agent without each suspicious segment. "Removing <i>this</i> paragraph stops the hijack."</li>
-          <li><b>Defence:</b> drop hidden text → quarantine score ≥ 0.5 → redact PII → spotlight as data (Hines et al. 2024) → check output.</li>
-        </ul>
+  </div>
+
+  <!-- ========== RUBRIC: artifact / contribution ========== -->
+  <div class="col">
+    <section class="grow">
+      <h2><span class="num">3</span>The artifact</h2>
+      <img class="shot" style="height:520px;object-position:center 40%" src="../docs/img/poster-stage.png" alt="Spider crawling a site graph with color-coded decisions">
+      <p class="caption">Live demo: nodes are pages. <span class="good">Green</span> = collected · <span class="warn">Yellow</span> = PII redacted · <span class="bad">Red</span> = injection quarantined · Grey = skipped for consent. Dashed ring = naive AI agent was hijacked.</p>
+      <div class="contrib" style="margin-top:18px">
+        <i class="c1">1</i><div><b>Contrastive receipts</b> — “naive scraper takes everything” vs “responsible spider skipped / quarantined,” with the exact robots line or CSS hide as evidence.</div>
+        <i class="c2">2</i><div><b>Two AI agents</b> — naive (reads all text) vs guarded (drop hidden → quarantine → redact → spotlight as data).</div>
+        <i class="c3">3</i><div><b>Causal explanation</b> — leave-one-out ablation: “removing <i>this</i> segment stops the hijack.”</div>
+        <i class="c4">4</i><div><b>Reproducible suite</b> — Willow Creek lab site, 89-page attack benchmark, and a real-web robots.txt audit.</div>
       </div>
     </section>
   </div>
 
+  <!-- ========== RUBRIC: results + limitation/future ========== -->
   <div class="col">
     <section>
-      <h2>Injection benchmark <small>gpt-4.1-mini · 17 stratified</small></h2>
-      <p class="k" style="font-size:25px">One canary attack per hiding technique (9) + 8 benign controls, including benign hidden UI and an article <i>about</i> injection. Full 89-page generator still ships in the repo.</p>
-      <div class="big">
-        <div class="stat"><b class="bad">89%</b><span>naive agent hijacked (gpt-4.1-mini)</span></div>
-        <div class="stat"><b class="good">0%</b><span>guarded agent hijacked (gpt-4.1-mini)</span></div>
-        <div class="stat"><b>89%</b><span>detector precision</span></div>
-        <div class="stat"><b>89%</b><span>detector recall · 13% FPR · utility 100%</span></div>
+      <h2><span class="num">4</span>Primary results</h2>
+      <p class="muted" style="margin-bottom:12px;font-size:24px">Real model <code>gpt-4.1-mini</code> · stratified 17 pages (9 canary attacks × hiding technique + 8 benign). Real-web audit: 44 sites.</p>
+      <div class="kpis">
+        <div class="kpi"><b class="bad">89%</b><span>Naive agent hijacked</span></div>
+        <div class="kpi"><b class="good">0%</b><span>Guarded agent hijacked</span></div>
+        <div class="kpi"><b class="warn">66%</b><span>Popular sites block ≥1 AI crawler</span></div>
+        <div class="kpi"><b>9/9</b><span>News sites block AI crawlers</span></div>
       </div>
-      <p class="caption" style="margin-top:14px">Stratified sample: 17 pages (9 canary attacks × 1 per hiding technique + 8 benign). Full 89-page simulated run matched these ASR numbers.</p>
       <table>
         <tr><th>Hiding technique</th><th style="text-align:right">Detected</th></tr>
-        <tr><td>display:none · white text · zero font · off-screen · comment · alt text · noscript</td><td class="n good">100%</td></tr>
-        <tr><td>Visible fine print ("Note to AI assistants…")</td><td class="n good">100%</td></tr>
-        <tr><td>Subtle visible phrasing, no trigger words</td><td class="n bad">0%</td></tr>
+        <tr><td>Hidden CSS / comment / alt / noscript / fine print</td><td class="n good">100%</td></tr>
+        <tr><td>Subtle visible phrasing (no trigger words)</td><td class="n bad">0%</td></tr>
       </table>
+      <p style="margin-top:12px;margin-bottom:0;font-size:25px"><b>Insight:</b> hiding is the tell — instruction-like text humans can’t see has almost no legitimate use. Keywords fail both ways (miss soft phrasing; flag articles <i>about</i> injection).</p>
     </section>
-    <section>
-      <h2>Insights</h2>
+
+    <section class="grow">
+      <h2><span class="num">5</span>Limitation &amp; next step</h2>
       <ul>
-        <li><b>Hiding is the tell.</b> Instruction-like text humans can't see has almost no legitimate use, so visibility filtering alone stops every hidden attack.</li>
-        <li><b>Keywords fail both ways.</b> Subtle phrasing gets through, and a benign article about injection gets flagged.</li>
-        <li><b>Opt-outs ≠ enforcement.</b> Sites say "search yes, AI no" with a protocol built for search.</li>
+        <li><b>Limitation:</b> visibility analysis is static (no full browser/JS render), so some real-site hides can be missed. The detector is transparent by design and can be evaded with subtle wording.</li>
+        <li><b>Future:</b> Expo user study — can receipts improve visitors’ ability to predict and trust crawler decisions? Plus a headless-browser pass and a full 89-page real-model run on a higher API tier.</li>
       </ul>
-    </section>
-    <section>
-      <h2>Limitations &amp; future work</h2>
-      <ul>
-        <li>Static CSS analysis → headless-browser pass.</li>
-        <li>Small stratified sample → full 89-page real-model when tier allows.</li>
-        <li>Opt-outs are voluntary; our reading is a normative choice.</li>
-        <li><b>Expo study:</b> do receipts improve visitors' ability to predict and trust crawler decisions?</li>
-      </ul>
+      <p class="muted" style="margin-top:14px;margin-bottom:0;font-size:24px">Try it: <code>npm install && npm run dev</code> → open localhost:5317 → crawl the Lab site.</p>
     </section>
   </div>
 </main>
+
 <footer>
-  <span>Code, docs &amp; benchmark: [repository link] · Run locally: <code>npm install &amp;&amp; npm run dev</code></span>
-  <span>Spider animation inspired by @rybinfx (original implementation) · Refs: Greshake '23 · Hines '24 · Longpre '24 · Miller '19 · EU AI Act Art. 53 · RFC 9309</span>
+  <span>Print: <b>36″ × 24″ landscape</b> on 24×36″ satin photo paper · PDF: <code>poster/responsible-spider-poster.pdf</code></span>
+  <span>Refs: Greshake ’23 · Hines ’24 · Longpre ’24 · Miller ’19 · EU AI Act Art. 53 · RFC 9309</span>
 </footer>
+
 </body>
 </html>
