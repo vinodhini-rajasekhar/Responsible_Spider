@@ -1,9 +1,10 @@
 import type { Spider } from './spider';
 
 const SHELL = '#f2ebe0';
-const SHELL_DIM = 'rgba(242, 235, 224, 0.55)';
 const CREASE = 'rgba(13, 15, 19, 0.22)';
 const EYE = '#0d0f13';
+/** Body size relative to the leg scale; matches HIP_X / HIP_Y in spider.ts. */
+const BODY = 1.25;
 
 export function drawBackground(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.fillStyle = '#0d0f13';
@@ -20,73 +21,50 @@ export function drawBackground(ctx: CanvasRenderingContext2D, w: number, h: numb
   }
 }
 
-/** Draw a tapered two-bone spider leg. Knee already bows away from the body via IK. */
-function drawLeg(
-  ctx: CanvasRenderingContext2D,
-  hip: { x: number; y: number },
-  knee: { x: number; y: number },
-  foot: { x: number; y: number },
-  s: number,
-  highlight: boolean,
-  stepping: boolean,
-) {
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.strokeStyle = highlight ? '#ffffff' : SHELL;
+type P = { x: number; y: number };
 
-  // Fake a third joint on the lower bone for a classic spider silhouette (IK stays 2-bone).
-  const tarsusT = 0.62;
-  const ankle = {
-    x: knee.x + (foot.x - knee.x) * tarsusT,
-    y: knee.y + (foot.y - knee.y) * tarsusT,
-  };
-
-  // Femur — thickest
-  ctx.lineWidth = (highlight ? 4.6 : 3.8) * s;
+/** Filled segment that tapers from width w0 at a to w1 at b, with rounded ends. */
+function taper(ctx: CanvasRenderingContext2D, a: P, b: P, w0: number, w1: number) {
+  const ang = Math.atan2(b.y - a.y, b.x - a.x);
+  const nx = -Math.sin(ang);
+  const ny = Math.cos(ang);
   ctx.beginPath();
-  ctx.moveTo(hip.x, hip.y);
-  ctx.lineTo(knee.x, knee.y);
-  ctx.stroke();
-
-  // Tibia
-  ctx.lineWidth = (highlight ? 3.0 : 2.5) * s;
-  ctx.beginPath();
-  ctx.moveTo(knee.x, knee.y);
-  ctx.lineTo(ankle.x, ankle.y);
-  ctx.stroke();
-
-  // Tarsus — thinnest
-  ctx.lineWidth = (highlight ? 2.0 : 1.6) * s;
-  ctx.beginPath();
-  ctx.moveTo(ankle.x, ankle.y);
-  ctx.lineTo(foot.x, foot.y);
-  ctx.stroke();
-
-  // Claw tip
-  ctx.lineWidth = 1.1 * s;
-  const a = Math.atan2(foot.y - ankle.y, foot.x - ankle.x);
-  ctx.beginPath();
-  ctx.moveTo(foot.x, foot.y);
-  ctx.lineTo(foot.x + Math.cos(a + 0.7) * 3.4 * s, foot.y + Math.sin(a + 0.7) * 3.4 * s);
-  ctx.moveTo(foot.x, foot.y);
-  ctx.lineTo(foot.x + Math.cos(a - 0.7) * 3.4 * s, foot.y + Math.sin(a - 0.7) * 3.4 * s);
-  ctx.stroke();
-
-  ctx.fillStyle = SHELL;
-  ctx.beginPath();
-  ctx.arc(knee.x, knee.y, 2.3 * s, 0, Math.PI * 2);
+  ctx.moveTo(a.x + nx * w0, a.y + ny * w0);
+  ctx.lineTo(b.x + nx * w1, b.y + ny * w1);
+  ctx.arc(b.x, b.y, w1, ang + Math.PI / 2, ang - Math.PI / 2, true);
+  ctx.lineTo(a.x - nx * w0, a.y - ny * w0);
+  ctx.arc(a.x, a.y, w0, ang - Math.PI / 2, ang + Math.PI / 2, true);
   ctx.fill();
-  ctx.beginPath();
-  ctx.arc(ankle.x, ankle.y, 1.6 * s, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = stepping ? SHELL_DIM : SHELL;
-  ctx.beginPath();
-  ctx.arc(foot.x, foot.y, (stepping ? 2.2 : 1.5) * s, 0, Math.PI * 2);
-  ctx.fill();
+}
+
+/**
+ * Draw a jointed spider leg: femur, then a lower leg with a soft second bend.
+ * The IK is two-bone; the ankle is offset outward from the body so the leg arcs like a real spider's.
+ */
+function drawLeg(ctx: CanvasRenderingContext2D, body: P, hip: P, knee: P, foot: P, s: number, highlight: boolean) {
+  ctx.fillStyle = highlight ? '#ffffff' : SHELL;
+
+  const t = 0.56;
+  const mid = { x: knee.x + (foot.x - knee.x) * t, y: knee.y + (foot.y - knee.y) * t };
+  const len = Math.hypot(foot.x - knee.x, foot.y - knee.y) || 1;
+  let px = -(foot.y - knee.y) / len;
+  let py = (foot.x - knee.x) / len;
+  if (px * (mid.x - body.x) + py * (mid.y - body.y) < 0) {
+    px = -px;
+    py = -py;
+  }
+  const bow = len * 0.07;
+  const ankle = { x: mid.x + px * bow, y: mid.y + py * bow };
+
+  const k = highlight ? 1.15 : 1;
+  taper(ctx, hip, knee, 2.6 * s * k, 2.1 * s * k);
+  taper(ctx, knee, ankle, 2.0 * s * k, 1.45 * s * k);
+  taper(ctx, ankle, foot, 1.35 * s * k, 0.45 * s * k);
 }
 
 export function drawSpider(ctx: CanvasRenderingContext2D, sp: Spider, highlight: string | null) {
   const s = sp.scale;
+  const b = s * BODY;
 
   // Soft contact shadow so the body reads as sitting on the web.
   ctx.save();
@@ -94,7 +72,7 @@ export function drawSpider(ctx: CanvasRenderingContext2D, sp: Spider, highlight:
   ctx.rotate(sp.heading);
   ctx.fillStyle = 'rgba(0,0,0,0.35)';
   ctx.beginPath();
-  ctx.ellipse(-4 * s, 2 * s, 22 * s, 10 * s, 0, 0, Math.PI * 2);
+  ctx.ellipse(-8 * b, 2 * b, 24 * b, 12 * b, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
@@ -106,86 +84,54 @@ export function drawSpider(ctx: CanvasRenderingContext2D, sp: Spider, highlight:
       fx += (leg.hip.x - fx) * lift;
       fy += (leg.hip.y - fy) * lift;
     }
-    drawLeg(ctx, leg.hip, leg.knee, { x: fx, y: fy }, s, highlight === leg.name, leg.state === 'stepping');
+    drawLeg(ctx, sp.pos, leg.hip, leg.knee, { x: fx, y: fy }, s, highlight === leg.name);
   }
 
   ctx.save();
   ctx.translate(sp.pos.x, sp.pos.y);
   ctx.rotate(sp.heading);
+  ctx.fillStyle = SHELL;
 
-  // Pedipalps (front feelers) — short, forward, spider-like.
+  // Short hooked chelicerae at the front, curling inward.
   ctx.strokeStyle = SHELL;
   ctx.lineCap = 'round';
-  ctx.lineWidth = 1.7 * s;
+  ctx.lineWidth = 2 * b;
   for (const side of [-1, 1]) {
     ctx.beginPath();
-    ctx.moveTo(10 * s, side * 3.5 * s);
-    ctx.quadraticCurveTo(16 * s, side * 7 * s, 19 * s, side * 3 * s);
-    ctx.stroke();
-    ctx.fillStyle = SHELL;
-    ctx.beginPath();
-    ctx.arc(19 * s, side * 3 * s, 1.4 * s, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // Abdomen — large teardrop behind the cephalothorax (classic spider silhouette).
-  ctx.fillStyle = SHELL;
-  ctx.beginPath();
-  ctx.moveTo(-2 * s, 0);
-  ctx.bezierCurveTo(-6 * s, -14 * s, -28 * s, -13 * s, -32 * s, 0);
-  ctx.bezierCurveTo(-28 * s, 13 * s, -6 * s, 14 * s, -2 * s, 0);
-  ctx.closePath();
-  ctx.fill();
-
-  // Soft abdomen segments
-  ctx.strokeStyle = CREASE;
-  ctx.lineWidth = 1.2 * s;
-  for (const x of [-12, -18, -24]) {
-    ctx.beginPath();
-    ctx.ellipse(x * s, 0, 2.2 * s, 8.5 * s, 0, -0.9, 0.9);
+    ctx.moveTo(10 * b, side * 2.6 * b);
+    ctx.quadraticCurveTo(16.5 * b, side * 4.6 * b, 15.6 * b, side * 1.3 * b);
     ctx.stroke();
   }
 
-  // Cephalothorax — flatter oval body the legs attach to.
-  ctx.fillStyle = SHELL;
+  // Large oval abdomen behind a small waist.
   ctx.beginPath();
-  ctx.ellipse(4 * s, 0, 12 * s, 8 * s, 0, 0, Math.PI * 2);
+  ctx.ellipse(-17 * b, 0, 14.5 * b, 11 * b, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(-2.5 * b, 0, 3 * b, 3.6 * b, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Narrow waist between abdomen and cephalothorax
+  // Rounded cephalothorax the legs attach to.
   ctx.beginPath();
-  ctx.ellipse(-2 * s, 0, 3.2 * s, 4 * s, 0, 0, Math.PI * 2);
+  ctx.ellipse(3.5 * b, 0, 8.8 * b, 8 * b, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Head / carapace front
+  ctx.fillStyle = CREASE;
   ctx.beginPath();
-  ctx.ellipse(12 * s, 0, 5.5 * s, 5 * s, 0, 0, Math.PI * 2);
+  ctx.ellipse(-17 * b, 0, 8 * b, 1.1 * b, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Eye cluster (4+2 arrangement reads as a spider at this size)
   ctx.fillStyle = EYE;
   const eyes: [number, number, number][] = [
-    [14.2, 1.8, 1.15],
-    [14.2, -1.8, 1.15],
-    [12.4, 3.2, 0.75],
-    [12.4, -3.2, 0.75],
-    [11.2, 1.4, 0.55],
-    [11.2, -1.4, 0.55],
+    [9.6, 1.5, 0.95],
+    [9.6, -1.5, 0.95],
+    [8.4, 3.1, 0.65],
+    [8.4, -3.1, 0.65],
   ];
   for (const [x, y, r] of eyes) {
     ctx.beginPath();
-    ctx.arc(x * s, y * s, r * s, 0, Math.PI * 2);
+    ctx.arc(x * b, y * b, r * b, 0, Math.PI * 2);
     ctx.fill();
-  }
-
-  // Subtle chelicerae (fangs)
-  ctx.strokeStyle = EYE;
-  ctx.lineWidth = 1.1 * s;
-  for (const side of [-1, 1]) {
-    ctx.beginPath();
-    ctx.moveTo(15.5 * s, side * 1.2 * s);
-    ctx.lineTo(17.5 * s, side * 2.4 * s);
-    ctx.stroke();
   }
 
   ctx.restore();

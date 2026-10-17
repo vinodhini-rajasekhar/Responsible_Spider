@@ -52,7 +52,7 @@ function resize() {
   canvas.style.height = `${height}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   params.legLength = Math.round(Math.max(36, Math.min(64, Math.min(width, height) * 0.075)));
-  params.threshold = Math.round(params.legLength * 0.4);
+  params.threshold = Math.round(params.legLength * 0.28);
   spider.layout(params);
   graph.layout(width, height);
   if (first) {
@@ -258,8 +258,8 @@ function frame(now: number) {
     }
   } else if (!graph.root) {
     // Slow figure-eight so idle legs stay readable (not a frantic scribble).
-    idleT += dt * 0.35;
-    const r = Math.min(width, height) * 0.14;
+    idleT += dt * 0.22;
+    const r = Math.min(width, height) * 0.3;
     target.x = width / 2 + Math.sin(idleT) * r;
     target.y = height / 2 + Math.sin(idleT * 2) * r * 0.45;
   }

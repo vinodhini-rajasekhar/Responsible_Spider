@@ -55,12 +55,17 @@ const GROUP_OF: Record<string, Group> = {
   R1: 'B', L2: 'B', R3: 'B', L4: 'B',
 };
 
-// Hips sit on the cephalothorax rim; angles fan front→rear like a real spider.
+// Hips sit on the cephalothorax rim. Front pairs reach forward, rear pairs reach back,
+// as in a real spider seen from above.
 const HIP_X = [10, 5, 0, -5];
-const REST_ANGLE_DEG = [28, 68, 112, 155];
-const LEN_MULT = [1.12, 1.0, 0.98, 1.08];
+const HIP_Y = [6.9, 9.4, 9.4, 6.9];
+const REST_ANGLE_DEG = [22, 50, 130, 158];
+const LEN_MULT = [1.1, 0.96, 0.94, 1.08];
+// Rest foot distance as a fraction of full reach: low enough that every knee visibly bends,
+// higher on the middle pairs so their thighs stay apart.
+const REST_REACH = [0.8, 0.9, 0.9, 0.8];
 const OVERSTRETCH = 0.97;
-const FORCE_FACTOR = 2.4;
+const FORCE_FACTOR = 1.7;
 
 export class Spider {
   pos: Vec;
@@ -103,13 +108,12 @@ export class Spider {
     for (const leg of this.legs) {
       const i = leg.index;
       const m = LEN_MULT[i];
-      // Slightly longer lower segment → stronger knee arch, less “bug stick” look.
-      leg.upper = L * 0.55 * m;
-      leg.lower = L * 0.78 * m;
+      leg.upper = L * 0.5 * m;
+      leg.lower = L * 0.82 * m;
       const a = (REST_ANGLE_DEG[i] * Math.PI) / 180;
-      const r = L * 0.78 * m;
-      leg.hipLocal = vec(HIP_X[i] * s, leg.side * 6.5 * s);
-      leg.restLocal = vec(leg.hipLocal.x + Math.cos(a) * r, leg.side * (6.5 * s + Math.sin(a) * r));
+      const r = (leg.upper + leg.lower) * REST_REACH[i];
+      leg.hipLocal = vec(HIP_X[i] * s, leg.side * HIP_Y[i] * s);
+      leg.restLocal = vec(leg.hipLocal.x + Math.cos(a) * r, leg.hipLocal.y + leg.side * Math.sin(a) * r);
     }
   }
 
@@ -152,10 +156,12 @@ export class Spider {
     this.pos.x += this.vel.x * dt;
     this.pos.y += this.vel.y * dt;
     const spd = Math.hypot(this.vel.x, this.vel.y);
-    if (spd > 6) {
+    const prevHeading = this.heading;
+    if (spd > 15) {
       const want = Math.atan2(this.vel.y, this.vel.x);
-      this.heading += angleDiff(this.heading, want) * (1 - Math.exp(-dt * 6));
+      this.heading += angleDiff(this.heading, want) * (1 - Math.exp(-dt * 4.5));
     }
+    const turnRate = angleDiff(prevHeading, this.heading) / dt;
 
     const thr = params.threshold;
     // Size swings so the body travels under ~0.8× threshold while a group is airborne;
@@ -172,11 +178,21 @@ export class Spider {
       leadY *= leadMax / leadLen;
     }
 
+    // While turning, feet also land ahead in the turn so they don't trail into a pinwheel.
+    const turnLead = Math.max(-0.5, Math.min(0.5, turnRate * this.stepDuration * 1.6));
+    const tc = Math.cos(turnLead);
+    const ts = Math.sin(turnLead);
+
     // --- Legs: update targets, advance swings, measure drift.
     for (const leg of this.legs) {
       leg.hip = this.toWorld(leg.hipLocal);
       leg.target = this.toWorld(leg.restLocal);
-      leg.landing = { x: leg.target.x + leadX, y: leg.target.y + leadY };
+      const rx = leg.target.x - this.pos.x;
+      const ry = leg.target.y - this.pos.y;
+      leg.landing = {
+        x: this.pos.x + rx * tc - ry * ts + leadX,
+        y: this.pos.y + rx * ts + ry * tc + leadY,
+      };
 
       if (leg.state === 'stepping') {
         leg.swingT += dt / leg.swingDur;
@@ -254,7 +270,19 @@ export class Spider {
   solveIK() {
     for (const leg of this.legs) {
       leg.hip = this.toWorld(leg.hipLocal);
-      const ik = solveTwoBone(leg.hip, leg.foot, leg.upper, leg.lower, this.pos);
+      // Knees bend outward, away from the midline; front-leg knees point back and
+      // rear-leg knees point forward, so neighbouring legs never cross.
+      const c = Math.cos(this.heading);
+      const sn = Math.sin(this.heading);
+      const fwdSign = leg.index < 2 ? -1 : 1;
+      const kneeScore = (k: Vec) => {
+        const dx = k.x - this.pos.x;
+        const dy = k.y - this.pos.y;
+        const lateral = leg.side * (-dx * sn + dy * c);
+        const forward = dx * c + dy * sn;
+        return lateral + fwdSign * forward * 0.6;
+      };
+      const ik = solveTwoBone(leg.hip, leg.foot, leg.upper, leg.lower, kneeScore);
       leg.knee = ik.knee;
       leg.clamped = ik.clamped;
       leg.reachRatio = ik.reachRatio;
