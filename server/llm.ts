@@ -107,15 +107,15 @@ async function complete(system: string, content: string, guarded: boolean): Prom
       return res.choices[0]?.message?.content?.trim() ?? '';
     } catch (err) {
       const status = (err as { status?: number }).status;
-      if (status !== 429 || attempt >= 12) throw err;
       const msg = String((err as Error).message ?? '');
-      const m = msg.match(/try again in (\d+)m(\d+)?s/i) ?? msg.match(/try again in (\d+)s/i);
-      let wait = Math.min(90_000, 4000 * 2 ** attempt);
-      if (m) {
-        wait = m[2] !== undefined ? (Number(m[1]) * 60 + Number(m[2] || 0)) * 1000 + 5000 : Number(m[1]) * 1000 + 2000;
-        // Cap waits so a crawl UI never hangs for a full free-tier day.
-      wait = Math.min(wait, 90_000);
+      // Daily budget exhausted — fail immediately so crawls don't hang for hours.
+      if (status === 429 && /requests per day|RPD/i.test(msg)) {
+        throw new Error('OpenAI daily request limit reached for this model. Uncheck “AI agent” to keep crawling, or switch OPENAI_MODEL / wait for reset.');
       }
+      if (status !== 429 || attempt >= 3) throw err;
+      const m = msg.match(/try again in (\d+)m(\d+)?s/i) ?? msg.match(/try again in (\d+)s/i);
+      let wait = Math.min(15_000, 2000 * 2 ** attempt);
+      if (m && m[2] === undefined) wait = Math.min(15_000, Number(m[1]) * 1000 + 500);
       console.warn(`[openai] 429 — waiting ${Math.round(wait / 1000)}s (attempt ${attempt + 1})`);
       nextSlot = Date.now() + wait;
       await new Promise((r) => setTimeout(r, wait));
