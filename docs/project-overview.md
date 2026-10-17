@@ -10,7 +10,7 @@ AI systems increasingly **scrape the web** to train models and to power “brows
 
 Both problems share one gap: **what a human sees on a page vs. what a machine takes from the HTML.**
 
-**Responsible Spider** is an interactive demo and research artifact that makes that gap visible. An animated spider walks a live map of a website. At each page it stops, decides, and shows a **decision receipt**: why the page was collected, redacted, quarantined, or skipped — and how a naive AI summariser vs. a guarded one each behaved.
+**Responsible Spider** is an interactive demo and research artifact that makes that gap visible. An animated spider walks a live map of a website. At each page it stops, decides, and shows a **decision receipt**: why the page was collected, redacted, quarantined, or skipped — and how a naive AI summariser vs. the Responsible Spider agent each behaved.
 
 It sits at the intersection of:
 
@@ -32,7 +32,7 @@ For each URL the crawler:
 4. Scores segments for **prompt-injection**-like language
 5. Detects and **redacts PII**
 6. Emits a **receipt** (UI + log)
-7. Optionally runs two AI agents: **naive** vs **guarded**
+7. Optionally runs two AI agents: **naive** vs **Responsible Spider**
 
 The spider visualisation is the embodiment layer: pages are nodes on a radial “web”; the spider walks to each node as decisions arrive.
 
@@ -58,7 +58,7 @@ Regex + Luhn validation for emails, phones, SSNs, card numbers, and IPs. Matches
 
 **Transparent injection scorer:** weighted, named signals (e.g. “ignore previous instructions”, “note to AI”, role reassignment). Score = \(1 - \prod(1 - w_i)\). Segments above threshold **0.5** are quarantined.
 
-**Guarded agent defences (stacked):**
+**Responsible Spider agent defences (stacked):**
 
 1. Drop human-invisible text  
 2. Quarantine high-score segments  
@@ -86,7 +86,7 @@ Regex + Luhn validation for emails, phones, SSNs, card numbers, and IPs. Matches
 | **False-positive rate (FPR)** | Share of benign pages wrongly flagged |
 | **Attack success rate (ASR)** | Share of attacks where the agent’s output matches the attacker’s goal (canary / phishing link / smear) |
 | **Benign utility** | Share of key article facts kept in the summary |
-| **False refusals** | Benign pages where the guarded agent wrongly refuses |
+| **False refusals** | Benign pages where the Responsible Spider agent wrongly refuses |
 | **Opt-out prevalence** | Share of real sites blocking ≥1 AI crawler in `robots.txt` |
 
 ### 3.2 Key results
@@ -99,7 +99,7 @@ Regex + Luhn validation for emails, phones, SSNs, card numbers, and IPs. Matches
 
 **Injection benchmark — real model `gpt-4.1-mini` (stratified 17 pages)**
 
-| | Naive agent | Guarded agent |
+| | Naive agent | Responsible Spider agent |
 |---|---|---|
 | Attack success rate | **89%** | **0%** |
 | Benign utility | 100% | 100% |
@@ -127,7 +127,7 @@ What is new / distinctive about this project:
    Most tools do either robots compliance *or* injection defence. This couples both and explains each decision as it happens.
 
 2. **Contrastive, evidence-bearing receipts**  
-   Every page shows *naive vs responsible* and *naive agent vs guarded agent*, with the exact robots line, CSS trick, or text segment as evidence — not just a risk score.
+   Every page shows *naive vs responsible* and *naive agent vs Responsible Spider agent*, with the exact robots line, CSS trick, or text segment as evidence — not just a risk score.
 
 3. **Causal, not only correlational, explanations**  
    Leave-one-out ablation answers: “which hidden paragraph *caused* the hijack?”

@@ -32,7 +32,7 @@ function securityChecks(segments: Segment[]): Check[] {
       id: 'hidden', layer: 'security', label: 'Text a human can see matches text an AI reads',
       status: visualHidden.length ? 'warn' : 'pass',
       detail: visualHidden.length
-        ? `${visualHidden.length} text segment(s) are invisible to people but would reach a naive AI pipeline (${[...new Set(visualHidden.flatMap((s) => s.hiddenReasons))].slice(0, 3).join('; ')}). They are dropped before the guarded agent.`
+        ? `${visualHidden.length} text segment(s) are invisible to people but would reach a naive AI pipeline (${[...new Set(visualHidden.flatMap((s) => s.hiddenReasons))].slice(0, 3).join('; ')}). They are dropped before the Responsible Spider agent.`
         : hidden.length ? `Only alt/title text is hidden (${hidden.length}); kept unless it looks like an instruction.` : 'No hidden text.',
     },
   ];
@@ -149,7 +149,7 @@ export async function crawl(opts: CrawlOptions, emit: (e: CrawlEvent) => void, s
       stats.skipped++;
     } else if (flagged) {
       report.decision = 'quarantined';
-      report.reason = `Collected with ${flagged} instruction-like segment(s) quarantined; the guarded agent never sees them.`;
+      report.reason = `Collected with ${flagged} instruction-like segment(s) quarantined; the Responsible Spider agent never sees them.`;
       stats.quarantined++;
     } else if (report.pii.length) {
       report.decision = 'redacted';

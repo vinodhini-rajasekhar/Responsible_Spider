@@ -25,7 +25,7 @@
           </div>
           <label class="field">Pages <input id="max-pages" type="number" min="1" max="120" value="25" /></label>
           <label class="check" title="Shadow-fetch opted-out pages to show what a naive scraper would take (lab site only)"><input id="compare" type="checkbox" checked /> Naive comparison</label>
-          <label class="check" title="Run naive and guarded AI agents on each page"><input id="agent" type="checkbox" checked /> AI agent</label>
+          <label class="check" title="Run naive and Responsible Spider AI agents on each page"><input id="agent" type="checkbox" checked /> AI agent</label>
           <button id="crawl" class="btn btn-primary" type="submit">Crawl</button>
           <button id="stop" class="btn" type="button" disabled>Stop</button>
           <span id="model-badge" class="badge" title="Model used by the AI agent">…</span>
@@ -64,7 +64,7 @@
         <section id="tab-receipt" class="tab-body" role="tabpanel">
           <div class="placeholder">
             <h3>Decision receipts</h3>
-            <p>Every page the spider visits gets a receipt: which consent signals it checked, what personal data it redacted, which text was hidden from humans, and how a naive AI agent and a guarded one each reacted.</p>
+            <p>Every page the spider visits gets a receipt: which consent signals it checked, what personal data it redacted, which text was hidden from humans, and how a naive AI agent and the Responsible Spider agent each reacted.</p>
             <p>Click any node in the web to open its receipt.</p>
           </div>
         </section>

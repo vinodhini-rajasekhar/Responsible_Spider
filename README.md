@@ -13,7 +13,7 @@ An animated spider walks a live map of a website. At each page it stops, checks 
 | **Security** | Text hidden from humans (display:none, white-on-white, zero font, off-screen, comments, alt text, `<noscript>`…), plus instruction-like text aimed at AI | Drops hidden text, quarantines likely prompt injections, and spotlights the rest as untrusted data |
 | **Politeness** | Crawl-delay, `nofollow`, request rate | Waits and doesn't follow links when asked |
 
-Every page is also summarised by two AI agents side by side. A **naive agent** reads the page the way most scrapers do: all text, hidden or not. A **guarded agent** reads it through the layers above. When the naive one gets hijacked, a **leave-one-out causal explanation** re-runs it without each suspicious segment and pinpoints which piece of hidden text caused the hijack.
+Every page is also summarised by two AI agents side by side. A **naive agent** reads the page the way most scrapers do: all text, hidden or not. The **Responsible Spider agent** reads it through the layers above. When the naive one gets hijacked, a **leave-one-out causal explanation** re-runs it without each suspicious segment and pinpoints which piece of hidden text caused the hijack.
 
 > Built for a Responsible AI course final project (XAI, adversarial AI, AI governance). See [`docs/research.md`](docs/research.md) for the research questions, literature, method and results.
 
@@ -64,7 +64,7 @@ Results are written to `bench/results/` as JSON and Markdown, and the Evaluation
 
 **Real-world audit (robots.txt, 16 Oct 2026):** 29 of 44 reachable popular sites (66%) block at least one AI crawler from their homepage. All 9 news sites do. 19 sites block GPTBot while still allowing Googlebot: "search yes, AI training no". Full table: [`bench/results/ai-bot-audit.md`](bench/results/ai-bot-audit.md).
 
-**Benchmark — real model `gpt-4.1-mini`, stratified 17 pages (17 Oct 2026):** naive agent ASR **89%**, guarded ASR **0%**, benign utility 100%/100%, detector precision/recall 89%/89%, false-positive rate 13%. Missed attack: subtle visible phrasing. False positive: a benign article *about* prompt injection. Full 89-page simulated run and methods: [`docs/research.md`](docs/research.md#results), [`bench/results/latest.md`](bench/results/latest.md).
+**Benchmark — real model `gpt-4.1-mini`, stratified 17 pages (17 Oct 2026):** naive agent ASR **89%**, Responsible Spider agent ASR **0%**, benign utility 100%/100%, detector precision/recall 89%/89%, false-positive rate 13%. Missed attack: subtle visible phrasing. False positive: a benign article *about* prompt injection. Full 89-page simulated run and methods: [`docs/research.md`](docs/research.md#results), [`bench/results/latest.md`](bench/results/latest.md).
 
 ## Project layout
 
@@ -72,7 +72,7 @@ Results are written to `bench/results/` as JSON and Markdown, and the Evaluation
 server/
   index.ts              API (5319) + lab site (5320)
   crawler.ts            BFS crawl, decisions, streaming events
-  llm.ts                naive vs guarded agents, simulated model, leave-one-out ablation
+  llm.ts                naive vs Responsible Spider agents, simulated model, leave-one-out ablation
   analyze/
     consent.ts          robots.txt / AI bots / ai.txt / TDMRep / noai / licence checks
     extract.ts          page → text segments + why each is (in)visible to humans
