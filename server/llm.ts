@@ -151,8 +151,11 @@ function localContextJudge(s: Segment): { injection: boolean; reason: string } {
   return { injection: s.injectionScore >= QUARANTINE_THRESHOLD, reason: 'Heuristic signals stand after a local context check.' };
 }
 
+/** After a daily-budget 429, stop calling OpenAI for judges so crawls stay fast. */
+let judgeLlmDisabled = false;
+
 async function llmContextJudge(s: Segment): Promise<{ injection: boolean; reason: string }> {
-  if (!client) return localContextJudge(s);
+  if (!client || judgeLlmDisabled) return localContextJudge(s);
   const user = JSON.stringify({
     hidden_from_humans: s.hidden,
     heuristic_signals: s.injectionSignals,
@@ -177,19 +180,32 @@ async function llmContextJudge(s: Segment): Promise<{ injection: boolean; reason
     return { injection: parsed.injection, reason: (parsed.reason || 'LLM context judge').slice(0, 180) };
   } catch (err) {
     const status = (err as { status?: number }).status;
-    if (status === 429) console.warn('[openai] injection judge skipped (rate limit); using local context check');
-    else console.warn('[openai] injection judge failed; using local context check', (err as Error).message);
+    const msg = String((err as Error).message ?? '');
+    if (status === 429 && /requests per day|RPD/i.test(msg)) {
+      judgeLlmDisabled = true;
+      console.warn('[openai] daily limit hit — injection judge using local context only for the rest of this process');
+    } else if (status === 429) {
+      console.warn('[openai] injection judge skipped (rate limit); using local context check');
+    } else {
+      console.warn('[openai] injection judge failed; using local context check', msg);
+    }
     return localContextJudge(s);
   }
 }
 
+export interface JudgeOptions {
+  /** When false (AI agent off), use the fast local context check only. Default true. */
+  llm?: boolean;
+}
+
 /** Re-score candidate segments using full-sentence context before quarantine. */
-export async function judgeInjections(segments: Segment[]): Promise<void> {
+export async function judgeInjections(segments: Segment[], opts: JudgeOptions = {}): Promise<void> {
+  const useLlm = opts.llm !== false;
   const candidates = segments.filter((s) => s.injectionScore >= 0.3 || s.injectionSignals.length > 0);
   for (const s of candidates) {
     const before = s.injectionScore;
-    const verdict = await llmContextJudge(s);
-    const who = SIMULATED || !client ? 'local context judge' : 'LLM context judge';
+    const verdict = useLlm ? await llmContextJudge(s) : localContextJudge(s);
+    const who = useLlm && client && !judgeLlmDisabled && !SIMULATED ? 'LLM context judge' : 'local context judge';
     if (verdict.injection) {
       if (before < QUARANTINE_THRESHOLD) s.injectionScore = Math.max(before, QUARANTINE_THRESHOLD);
       s.injectionSignals = [...s.injectionSignals.filter((x) => !/context judge/i.test(x)), `${who}: injection — ${verdict.reason}`];
@@ -206,7 +222,7 @@ export async function judgeInjections(segments: Segment[]): Promise<void> {
 export async function compareAgents(title: string, segments: Segment[], pii: PiiFinding[]): Promise<AgentComparison> {
   // Eval / explain paths may skip the crawler; still context-judge before the guarded agent runs.
   if (!segments.some((s) => s.injectionSignals.some((x) => /context judge/i.test(x)))) {
-    await judgeInjections(segments);
+    await judgeInjections(segments, { llm: true });
   }
   const visible = segments.filter((s) => !s.hidden).map((s) => s.text).join(' ');
   const naive = naiveContent(title, segments);
