@@ -114,9 +114,9 @@ export async function crawl(opts: CrawlOptions, emit: (e: CrawlEvent) => void, s
     }
 
     const ex = extractPage(html, url);
-    // Heuristics propose candidates; an LLM (or local fallback) reads full sentence context
-    // before anything is quarantined, so "act as a counterpoint" is not treated as an injection.
-    await judgeInjections(ex.segments);
+    // Context-check candidates before quarantine. With AI agent off, use the fast local
+    // judge only so crawls never stall on OpenAI rate limits.
+    await judgeInjections(ex.segments, { llm: opts.runAgent });
     const post = postFetchChecks(res.headers, ex);
     report.title = ex.title;
     report.segments = ex.segments;
