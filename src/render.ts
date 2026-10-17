@@ -34,37 +34,54 @@ function drawLeg(
   ctx.lineJoin = 'round';
   ctx.strokeStyle = highlight ? '#ffffff' : SHELL;
 
-  // Femur — thicker
-  ctx.lineWidth = (highlight ? 4.4 : 3.6) * s;
+  // Fake a third joint on the lower bone for a classic spider silhouette (IK stays 2-bone).
+  const tarsusT = 0.62;
+  const ankle = {
+    x: knee.x + (foot.x - knee.x) * tarsusT,
+    y: knee.y + (foot.y - knee.y) * tarsusT,
+  };
+
+  // Femur — thickest
+  ctx.lineWidth = (highlight ? 4.6 : 3.8) * s;
   ctx.beginPath();
   ctx.moveTo(hip.x, hip.y);
   ctx.lineTo(knee.x, knee.y);
   ctx.stroke();
 
-  // Tibia — thinner toward the foot
-  ctx.lineWidth = (highlight ? 2.5 : 2.0) * s;
+  // Tibia
+  ctx.lineWidth = (highlight ? 3.0 : 2.5) * s;
   ctx.beginPath();
   ctx.moveTo(knee.x, knee.y);
+  ctx.lineTo(ankle.x, ankle.y);
+  ctx.stroke();
+
+  // Tarsus — thinnest
+  ctx.lineWidth = (highlight ? 2.0 : 1.6) * s;
+  ctx.beginPath();
+  ctx.moveTo(ankle.x, ankle.y);
   ctx.lineTo(foot.x, foot.y);
   ctx.stroke();
 
-  // Small claw tip
-  ctx.lineWidth = 1.15 * s;
-  const a = Math.atan2(foot.y - knee.y, foot.x - knee.x);
+  // Claw tip
+  ctx.lineWidth = 1.1 * s;
+  const a = Math.atan2(foot.y - ankle.y, foot.x - ankle.x);
   ctx.beginPath();
   ctx.moveTo(foot.x, foot.y);
-  ctx.lineTo(foot.x + Math.cos(a + 0.65) * 3.2 * s, foot.y + Math.sin(a + 0.65) * 3.2 * s);
+  ctx.lineTo(foot.x + Math.cos(a + 0.7) * 3.4 * s, foot.y + Math.sin(a + 0.7) * 3.4 * s);
   ctx.moveTo(foot.x, foot.y);
-  ctx.lineTo(foot.x + Math.cos(a - 0.65) * 3.2 * s, foot.y + Math.sin(a - 0.65) * 3.2 * s);
+  ctx.lineTo(foot.x + Math.cos(a - 0.7) * 3.4 * s, foot.y + Math.sin(a - 0.7) * 3.4 * s);
   ctx.stroke();
 
   ctx.fillStyle = SHELL;
   ctx.beginPath();
-  ctx.arc(knee.x, knee.y, 2.2 * s, 0, Math.PI * 2);
+  ctx.arc(knee.x, knee.y, 2.3 * s, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(ankle.x, ankle.y, 1.6 * s, 0, Math.PI * 2);
   ctx.fill();
   ctx.fillStyle = stepping ? SHELL_DIM : SHELL;
   ctx.beginPath();
-  ctx.arc(foot.x, foot.y, (stepping ? 2.3 : 1.6) * s, 0, Math.PI * 2);
+  ctx.arc(foot.x, foot.y, (stepping ? 2.2 : 1.5) * s, 0, Math.PI * 2);
   ctx.fill();
 }
 
