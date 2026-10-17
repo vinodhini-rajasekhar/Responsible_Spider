@@ -113,7 +113,8 @@ async function complete(system: string, content: string, guarded: boolean): Prom
       let wait = Math.min(90_000, 4000 * 2 ** attempt);
       if (m) {
         wait = m[2] !== undefined ? (Number(m[1]) * 60 + Number(m[2] || 0)) * 1000 + 5000 : Number(m[1]) * 1000 + 2000;
-        wait = Math.min(wait, 35 * 60_000);
+        // Cap waits so a crawl UI never hangs for a full free-tier day.
+      wait = Math.min(wait, 90_000);
       }
       console.warn(`[openai] 429 — waiting ${Math.round(wait / 1000)}s (attempt ${attempt + 1})`);
       nextSlot = Date.now() + wait;

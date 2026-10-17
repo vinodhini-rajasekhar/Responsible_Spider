@@ -116,9 +116,19 @@ function onEvent(e: CrawlEvent) {
       graph.add(e.url, e.parent, e.depth);
       graph.layout(width, height);
       break;
-    case 'page':
-      pending.push(e.report);
+    case 'page': {
+      const existing = graph.nodes.get(e.report.url);
+      if (existing?.report) {
+        // Second emit: AI agent finished — refresh the receipt without re-animating.
+        existing.report = e.report;
+        if (selected === e.report.url || followSelection) select(e.report.url, false);
+      } else {
+        const queued = pending.findIndex((p) => p.url === e.report.url);
+        if (queued >= 0) pending[queued] = e.report;
+        else pending.push(e.report);
+      }
       break;
+    }
     case 'done':
       stats = e.stats;
       break;
@@ -147,7 +157,8 @@ function begin() {
   followSelection = true;
   log.clear();
   $('empty').hidden = true;
-  $('tab-receipt').innerHTML = '<div class="placeholder"><p>Waiting for the first page…</p></div>';
+  $('tab-receipt').innerHTML =
+    '<div class="placeholder"><p>Crawling… the spider will stop at the first page and open its decision receipt. If AI agent is on, summaries fill in a moment later.</p></div>';
   setCrawling(true);
   const isLab = new URL(seedInput.value).origin === new URL(labOrigin).origin;
   stopCrawl = startCrawl(
