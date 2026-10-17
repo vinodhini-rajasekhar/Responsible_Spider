@@ -152,16 +152,6 @@ export async function crawl(opts: CrawlOptions, emit: (e: CrawlEvent) => void, s
       stats.collected++;
     }
 
-    if (opts.runAgent && (report.decision !== 'skipped' || opts.compare) && ex.segments.length) {
-      try {
-        report.agent = await compareAgents(ex.title, ex.segments, report.pii);
-        if (report.agent.naive.hijacked) stats.naiveHijacked++;
-        if (report.agent.guarded.hijacked) stats.guardedHijacked++;
-      } catch (err) {
-        report.checks.push({ id: 'agent', layer: 'security', label: 'AI agent run', status: 'warn', detail: `Model call failed: ${(err as Error).message}` });
-      }
-    }
-
     if (post.follow) {
       for (const link of ex.links) {
         const lu = new URL(link);
@@ -171,8 +161,21 @@ export async function crawl(opts: CrawlOptions, emit: (e: CrawlEvent) => void, s
         queue.push({ url: link, depth: depth + 1, parent: url });
       }
     }
-    emit({ type: 'page', report });
+    // Emit the decision receipt immediately so the UI never stalls on the model.
+    emit({ type: 'page', report: { ...report, agent: undefined } });
     for (const link of report.links) emit({ type: 'discover', url: link, parent: url, depth: depth + 1 });
+
+    if (opts.runAgent && (report.decision !== 'skipped' || opts.compare) && ex.segments.length) {
+      try {
+        report.agent = await compareAgents(ex.title, ex.segments, report.pii);
+        if (report.agent.naive.hijacked) stats.naiveHijacked++;
+        if (report.agent.guarded.hijacked) stats.guardedHijacked++;
+        emit({ type: 'page', report });
+      } catch (err) {
+        report.checks.push({ id: 'agent', layer: 'security', label: 'AI agent run', status: 'warn', detail: `Model call failed: ${(err as Error).message}` });
+        emit({ type: 'page', report });
+      }
+    }
   }
   emit({ type: 'done', stats });
 }
