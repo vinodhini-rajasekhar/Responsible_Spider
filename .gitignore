@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 .env
+poster/
+docs/img/poster-*.png

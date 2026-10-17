@@ -66,10 +66,6 @@ Results are written to `bench/results/` as JSON and Markdown, and the Evaluation
 
 **Benchmark — real model `gpt-4.1-mini`, stratified 17 pages (17 Oct 2026):** naive agent ASR **89%**, guarded ASR **0%**, benign utility 100%/100%, detector precision/recall 89%/89%, false-positive rate 13%. Missed attack: subtle visible phrasing. False positive: a benign article *about* prompt injection. Full 89-page simulated run and methods: [`docs/research.md`](docs/research.md#results), [`bench/results/latest.md`](bench/results/latest.md).
 
-## Poster
-
-`poster/poster.html` is a 36×24-inch poster built from live screenshots. `poster/responsible-spider-poster.pdf` is the exported draft. To re-export after editing, open the HTML in Chrome, choose Print, set the paper size to 36×24 in with margins "None" and background graphics on, then save as PDF.
-
 ## Project layout
 
 ```
