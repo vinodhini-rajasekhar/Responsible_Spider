@@ -58,11 +58,10 @@ pre {
   min-width: 0;
 }
 .brand-mark {
-  width: 14px;
-  height: 14px;
+  width: 30px;
+  height: 30px;
   flex: none;
-  border-radius: 50%;
-  background: conic-gradient(var(--good) 0 25%, var(--warn) 0 50%, var(--bad) 0 75%, var(--skip) 0);
+  background: url('/spider-mark.svg') center / contain no-repeat;
 }
 .brand h1 {
   margin: 0;
