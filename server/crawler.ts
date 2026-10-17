@@ -3,7 +3,7 @@ import { USER_AGENT, loadSite, postFetchChecks, preFetchChecks } from './analyze
 import { extractPage } from './analyze/extract.ts';
 import { QUARANTINE_THRESHOLD } from './analyze/injection.ts';
 import { findPii } from './analyze/pii.ts';
-import { compareAgents } from './llm.ts';
+import { compareAgents, judgeInjections } from './llm.ts';
 
 export interface CrawlOptions {
   seed: string;
@@ -36,13 +36,20 @@ function securityChecks(segments: Segment[]): Check[] {
         : hidden.length ? `Only alt/title text is hidden (${hidden.length}); kept unless it looks like an instruction.` : 'No hidden text.',
     },
   ];
+  const cleared = segments.filter((s) => s.injectionSignals.some((x) => x.startsWith('cleared by context judge')));
   checks.push({
     id: 'injection', layer: 'security', label: 'No instructions aimed at AI systems',
-    status: flagged.length ? 'fail' : 'pass',
+    status: flagged.length ? 'fail' : cleared.length ? 'pass' : 'pass',
     detail: flagged.length
-      ? `${flagged.length} segment(s) scored ≥ ${QUARANTINE_THRESHOLD} for prompt injection and were quarantined. Top signals: ${flagged[0].injectionSignals.slice(0, 3).join('; ')}.`
-      : 'No segment crossed the quarantine threshold.',
-    evidence: flagged[0] ? `${flagged[0].where}: "${flagged[0].text.slice(0, 160)}${flagged[0].text.length > 160 ? '…' : ''}"` : undefined,
+      ? `${flagged.length} segment(s) scored ≥ ${QUARANTINE_THRESHOLD} for prompt injection and were quarantined after a full-sentence context check. Top signals: ${flagged[0].injectionSignals.slice(0, 3).join('; ')}.`
+      : cleared.length
+        ? `Short-phrase heuristics raised ${cleared.length} candidate(s), but the context judge cleared them as ordinary prose (not an injection).`
+        : 'No segment crossed the quarantine threshold.',
+    evidence: flagged[0]
+      ? `${flagged[0].where}: "${flagged[0].text.slice(0, 160)}${flagged[0].text.length > 160 ? '…' : ''}"`
+      : cleared[0]
+        ? `${cleared[0].where}: ${cleared[0].injectionSignals.find((x) => x.startsWith('cleared by'))}`
+        : undefined,
   });
   return checks;
 }
@@ -107,6 +114,9 @@ export async function crawl(opts: CrawlOptions, emit: (e: CrawlEvent) => void, s
     }
 
     const ex = extractPage(html, url);
+    // Heuristics propose candidates; an LLM (or local fallback) reads full sentence context
+    // before anything is quarantined, so "act as a counterpoint" is not treated as an injection.
+    await judgeInjections(ex.segments);
     const post = postFetchChecks(res.headers, ex);
     report.title = ex.title;
     report.segments = ex.segments;
