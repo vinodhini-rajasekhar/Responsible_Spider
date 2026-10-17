@@ -13,7 +13,7 @@ export function calloutFor(r: PageReport): { title: string; text: string } {
     case 'quarantined': {
       const top = [...r.segments].sort((a, b) => b.injectionScore - a.injectionScore)[0];
       const how = top?.hidden ? `hidden via ${top.hiddenReasons[0]}` : 'in visible text';
-      const agent = r.agent ? (r.agent.naive.hijacked ? ' Naive agent was hijacked; guarded agent was not.' : '') : '';
+      const agent = r.agent ? (r.agent.naive.hijacked ? ' Naive agent was hijacked; Responsible Spider agent was not.' : '') : '';
       return { title: '! Prompt injection quarantined', text: `Instruction aimed at AI ${how}, score ${top?.injectionScore.toFixed(2)}.${agent}` };
     }
     case 'redacted':
@@ -74,7 +74,7 @@ export function renderReceipt(el: HTMLElement, r: PageReport) {
           ${a.naive.hijackSignals.map((s) => `<span class="chip chip-signal">${esc(s)}</span>`).join('')}
         </div>
         <div class="agent ${a.guarded.hijacked ? 'hijacked' : 'safe'}">
-          <div class="agent-head"><b>Guarded agent</b><span>${a.guarded.hijacked ? 'HIJACKED' : 'ok'}</span></div>
+          <div class="agent-head"><b>Responsible Spider agent</b><span>${a.guarded.hijacked ? 'HIJACKED' : 'ok'}</span></div>
           <p class="agent-desc">Hidden text dropped, injections quarantined, PII redacted, spotlighted as data.</p>
           <blockquote>${esc(a.guarded.output)}</blockquote>
           ${a.guarded.hijackSignals.map((s) => `<span class="chip chip-signal">${esc(s)}</span>`).join('')}

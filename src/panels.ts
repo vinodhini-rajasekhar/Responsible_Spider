@@ -39,7 +39,7 @@ export class Log {
   add(r: PageReport, t: number) {
     const li = document.createElement('li');
     li.style.setProperty('--c', DECISION_COLOR[r.decision]);
-    li.innerHTML = `<time>${t.toFixed(1)}s</time><div><div class="lg-top"><b>${esc(DECISION_LABEL[r.decision])}</b><code>${esc(r.path)}</code></div><div class="lg-why">${esc(r.reason)}${r.agent?.naive.hijacked ? ` <span class="bad">Naive agent hijacked${r.agent.guarded.hijacked ? ', guarded too' : '; guarded agent safe'}.</span>` : ''}</div></div>`;
+    li.innerHTML = `<time>${t.toFixed(1)}s</time><div><div class="lg-top"><b>${esc(DECISION_LABEL[r.decision])}</b><code>${esc(r.path)}</code></div><div class="lg-why">${esc(r.reason)}${r.agent?.naive.hijacked ? ` <span class="bad">Naive agent hijacked${r.agent.guarded.hijacked ? ', Responsible Spider too' : '; Responsible Spider agent safe'}.</span>` : ''}</div></div>`;
     li.addEventListener('click', () => this.onPick(r.url));
     this.list.prepend(li);
     this.n++;
@@ -51,7 +51,7 @@ export class Log {
 const pct = (x: number) => `${Math.round(x * 100)}%`;
 
 function bars(rows: EvalRow[]): string {
-  return `<table class="evt"><thead><tr><th></th><th>n</th><th>Detected</th><th>Naive hijacked</th><th>Guarded hijacked</th></tr></thead><tbody>
+  return `<table class="evt"><thead><tr><th></th><th>n</th><th>Detected</th><th>Naive hijacked</th><th>Responsible Spider hijacked</th></tr></thead><tbody>
   ${rows.map((r) => `<tr><td>${esc(r.label)}</td><td>${r.n}</td>
     <td><span class="hbar good"><i style="width:${pct(r.detected / r.n)}"></i></span>${pct(r.detected / r.n)}</td>
     <td><span class="hbar bad"><i style="width:${pct(r.naiveHijacked / r.n)}"></i></span>${pct(r.naiveHijacked / r.n)}</td>
@@ -71,10 +71,10 @@ export async function renderEval(el: HTMLElement) {
     <p class="muted small">Generated ${new Date(e.generatedAt).toLocaleString()} · quarantine threshold ${e.threshold}</p>
     <div class="kpis">
       <div><b>${pct(e.agent.naiveASR)}</b><span>Naive attack success</span></div>
-      <div><b class="${e.agent.guardedASR > 0 ? 'bad' : 'good'}">${pct(e.agent.guardedASR)}</b><span>Guarded attack success</span></div>
+      <div><b class="${e.agent.guardedASR > 0 ? 'bad' : 'good'}">${pct(e.agent.guardedASR)}</b><span>Responsible Spider attack success</span></div>
       <div><b>${pct(e.detector.recall)}</b><span>Detector recall</span></div>
       <div><b>${pct(e.detector.fpr)}</b><span>False-positive rate</span></div>
-      <div><b>${pct(e.agent.benignUtilityGuarded)}</b><span>Benign utility (guarded)</span></div>
+      <div><b>${pct(e.agent.benignUtilityGuarded)}</b><span>Benign utility (Responsible Spider)</span></div>
       <div><b>${pct(e.agent.benignUtilityNaive)}</b><span>Benign utility (naive)</span></div>
     </div>
   </section>

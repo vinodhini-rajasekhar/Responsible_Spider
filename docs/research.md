@@ -21,13 +21,13 @@ Both problems share a root cause: **the gap between what a human sees on a page 
 
 Each design choice maps to known findings about what makes explanations useful:
 
-- **Contrastive.** People ask "why P rather than Q?" (Miller, 2019). Every receipt contrasts *Naive scraper: takes everything* with *Responsible spider: skipped*, and the naive agent's output with the guarded agent's.
+- **Contrastive.** People ask "why P rather than Q?" (Miller, 2019). Every receipt contrasts *Naive scraper: takes everything* with *Responsible spider: skipped*, and the naive agent's output with the Responsible Spider agent's.
 - **Evidence-bearing.** Each check cites the exact artefact, such as `robots.txt line 11: Disallow: /research/`, `<meta name="tdm-reservation" content="1">`, or the hidden segment's CSS selector and hiding technique. An auditor can verify the claim without trusting the tool.
 - **Causal, not just correlational.** The injection score says "this looks suspicious". Leave-one-out ablation, i.e. occlusion or representation erasure (Zeiler & Fergus, 2014; Li et al., 2016), says "removing *this* segment stops the hijack". It is model-agnostic and needs only black-box access.
 - **Transparent by construction.** The detector is a weighted list of named signals. The score is \(1 - \prod_i (1 - w_i)\) over the signals that fire, so every point of it is attributable to a sentence a human can read. We deliberately chose this over a more accurate but opaque classifier; future work could compare the two.
 - **Embodied.** The spider is not decoration. It turns an invisible background process into something you watch, and it slows decisions down to a pace a human can follow (Doshi-Velez & Kim, 2017, on explanation needing to fit the audience).
 
-### Defence layers (guarded agent)
+### Defence layers (Responsible Spider agent)
 
 1. **Visibility filtering.** Text that is never rendered for humans is dropped. Alt text is kept unless it looks like an instruction, because it is legitimate accessibility content.
 2. **Quarantine.** Segments scoring ≥ 0.5 are removed.
@@ -65,7 +65,7 @@ The nine hiding techniques are:
 
 Each attacker goal has a regex detector for its payload, so attack success is measured without a judge model. Benign utility is the share of each article's three key facts that a summary keeps.
 
-Metrics: detector precision, recall, F1 and false-positive rate; attack success rate (ASR) for the naive and guarded agents; benign utility; false refusals.
+Metrics: detector precision, recall, F1 and false-positive rate; attack success rate (ASR) for the naive and Responsible Spider agents; benign utility; false refusals.
 
 ### Lab walkthrough (RQ1 and RQ3)
 
@@ -100,9 +100,9 @@ On the lab site, a consent-blind scraper takes all 20 pages. The responsible cra
 | Detector precision / recall | 99% / 89% | 89% / 89% |
 | Detector false-positive rate | 13% (1 of 8 benign) | 13% (1 of 8 benign) |
 | Naive agent ASR | 89% | **89%** (8/9 canary attacks) |
-| Guarded agent ASR | 0% | **0%** (0/9) |
-| Benign utility (naive / guarded) | 56% / 67% | **100% / 100%** |
-| Guarded false refusals | 1 | **0** |
+| Responsible Spider agent ASR | 0% | **0%** (0/9) |
+| Benign utility (naive / Responsible Spider) | 56% / 67% | **100% / 100%** |
+| Responsible Spider false refusals | 1 | **0** |
 
 The real-model run is a free-tier-friendly stratified sample: all 8 benign controls plus one canary attack per hiding technique (`npm run eval -- --stratified`, 17 Oct 2026). The same detector logic underlies both columns; agent ASR is the RQ2 result.
 

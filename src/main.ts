@@ -100,7 +100,7 @@ function renderStats() {
     <span class="s-redacted"><b>${c('redacted')}</b> redacted</span>
     <span class="s-quarantined"><b>${c('quarantined')}</b> quarantined</span>
     <span class="s-skipped"><b>${c('skipped')}</b> skipped</span>
-    ${agentRuns ? `<span class="s-hijack">AI hijacked: naive <b>${naive}</b> · guarded <b>${guarded}</b></span>` : ''}
+    ${agentRuns ? `<span class="s-hijack">AI hijacked: naive <b>${naive}</b> · Responsible Spider <b>${guarded}</b></span>` : ''}
     ${crawling ? '<span class="s-live">● crawling</span>' : stats ? '<span>done</span>' : ''}`;
 }
 

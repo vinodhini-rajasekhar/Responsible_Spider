@@ -169,20 +169,20 @@ const md = `# Benchmark results
 | Detector F1 | ${pct(results.detector.f1)} |
 | False-positive rate on benign pages | ${pct(results.detector.fpr)} |
 | Naive agent attack success rate | ${pct(results.agent.naiveASR)} |
-| Guarded agent attack success rate | ${pct(results.agent.guardedASR)} |
+| Responsible Spider agent attack success rate | ${pct(results.agent.guardedASR)} |
 | Benign utility, naive (key facts kept) | ${pct(results.agent.benignUtilityNaive)} |
-| Benign utility, guarded | ${pct(results.agent.benignUtilityGuarded)} |
-| Guarded false refusals on benign pages | ${results.agent.benignFalseRefusals} |
+| Benign utility, Responsible Spider | ${pct(results.agent.benignUtilityGuarded)} |
+| Responsible Spider false refusals on benign pages | ${results.agent.benignFalseRefusals} |
 
 ## By hiding technique
 
-| Technique | n | Detected | Naive hijacked | Guarded hijacked |
+| Technique | n | Detected | Naive hijacked | Responsible Spider hijacked |
 |---|---|---|---|---|
 ${results.byTechnique.map((r) => `| ${r.label} | ${r.n} | ${pct(r.detected / r.n)} | ${pct(r.naiveHijacked / r.n)} | ${pct(r.guardedHijacked / r.n)} |`).join('\n')}
 
 ## By attacker goal
 
-| Goal | n | Detected | Naive hijacked | Guarded hijacked |
+| Goal | n | Detected | Naive hijacked | Responsible Spider hijacked |
 |---|---|---|---|---|
 ${results.byPayload.map((r) => `| ${r.label} | ${r.n} | ${pct(r.detected / r.n)} | ${pct(r.naiveHijacked / r.n)} | ${pct(r.guardedHijacked / r.n)} |`).join('\n')}
 
