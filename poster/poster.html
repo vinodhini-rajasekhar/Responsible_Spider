@@ -125,15 +125,15 @@
 
   <div class="col">
     <section>
-      <h2>Injection benchmark <small>89 pages</small></h2>
-      <p class="k" style="font-size:25px">3 articles × 3 attacker goals (canary, phishing link, smear) × 9 hiding techniques, plus 8 benign controls (incl. benign hidden menus and an article <i>about</i> injection).</p>
+      <h2>Injection benchmark <small>gpt-4.1-mini · 17 stratified</small></h2>
+      <p class="k" style="font-size:25px">One canary attack per hiding technique (9) + 8 benign controls, including benign hidden UI and an article <i>about</i> injection. Full 89-page generator still ships in the repo.</p>
       <div class="big">
-        <div class="stat"><b class="bad">89%</b><span>naive agent hijacked (simulated)</span></div>
-        <div class="stat"><b class="good">0%</b><span>guarded agent hijacked (simulated)</span></div>
-        <div class="stat"><b>99%</b><span>detector precision</span></div>
-        <div class="stat"><b>89%</b><span>detector recall · 13% false-positive rate</span></div>
+        <div class="stat"><b class="bad">89%</b><span>naive agent hijacked (gpt-4.1-mini)</span></div>
+        <div class="stat"><b class="good">0%</b><span>guarded agent hijacked (gpt-4.1-mini)</span></div>
+        <div class="stat"><b>89%</b><span>detector precision</span></div>
+        <div class="stat"><b>89%</b><span>detector recall · 13% FPR · utility 100%</span></div>
       </div>
-      <p class="placeholder" style="margin-top:14px">[Replace with gpt-4o-mini results from <code>npm run eval</code>]</p>
+      <p class="caption" style="margin-top:14px">Stratified sample: 17 pages (9 canary attacks × 1 per hiding technique + 8 benign). Full 89-page simulated run matched these ASR numbers.</p>
       <table>
         <tr><th>Hiding technique</th><th style="text-align:right">Detected</th></tr>
         <tr><td>display:none · white text · zero font · off-screen · comment · alt text · noscript</td><td class="n good">100%</td></tr>

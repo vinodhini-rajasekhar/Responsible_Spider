@@ -41,7 +41,7 @@ Then open **http://localhost:5317** and click **Crawl the lab site**.
 
 ### OpenAI key (optional but recommended)
 
-Put `OPENAI_API_KEY=sk-...` in `.env` (and optionally `OPENAI_MODEL`, default `gpt-4o-mini`). Without a key, a **simulated model** stands in. It is deliberately gullible: it obeys any explicit instruction it is given, so the pipeline and UI are fully demoable offline. The UI labels it "Simulated model" everywhere. Simulated results show what the defence *filters*. They are **not** evidence about how real LLMs behave.
+Put `OPENAI_API_KEY=sk-...` in `.env` (and optionally `OPENAI_MODEL`, default `gpt-4o-mini`; the poster eval used `gpt-4.1-mini` when `gpt-4o-mini`'s daily request budget was exhausted). Without a key, a **simulated model** stands in. It is deliberately gullible: it obeys any explicit instruction it is given, so the pipeline and UI are fully demoable offline. The UI labels it "Simulated model" everywhere. Simulated results show what the defence *filters*. They are **not** evidence about how real LLMs behave.
 
 ## Using it
 
@@ -64,7 +64,7 @@ Results are written to `bench/results/` as JSON and Markdown, and the Evaluation
 
 **Real-world audit (robots.txt, 16 Oct 2026):** 29 of 44 reachable popular sites (66%) block at least one AI crawler from their homepage. All 9 news sites do. 19 sites block GPTBot while still allowing Googlebot: "search yes, AI training no". Full table: [`bench/results/ai-bot-audit.md`](bench/results/ai-bot-audit.md).
 
-**Benchmark (simulated model):** detector precision 99%, recall 89%, false-positive rate 13% on benign pages. Naive agent attack success 89%, guarded 0%. Every missed attack is the "subtle visible phrasing" technique, and the one false positive is a benign article *about* prompt injection. Real-model numbers come from running `npm run eval` with your key; see [`docs/research.md`](docs/research.md#results).
+**Benchmark — real model `gpt-4.1-mini`, stratified 17 pages (17 Oct 2026):** naive agent ASR **89%**, guarded ASR **0%**, benign utility 100%/100%, detector precision/recall 89%/89%, false-positive rate 13%. Missed attack: subtle visible phrasing. False positive: a benign article *about* prompt injection. Full 89-page simulated run and methods: [`docs/research.md`](docs/research.md#results), [`bench/results/latest.md`](bench/results/latest.md).
 
 ## Poster
 

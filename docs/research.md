@@ -95,19 +95,23 @@ On the lab site, a consent-blind scraper takes all 20 pages. The responsible cra
 
 ### RQ2: Injection benchmark
 
-| | Simulated model | Real model (`gpt-4o-mini`) |
+| | Simulated model (89 pages) | Real model `gpt-4.1-mini` (stratified 17 pages) |
 |---|---|---|
-| Detector precision / recall | 99% / 89% | same detector |
-| Detector false-positive rate | 13% (1 of 8 benign) | same |
-| Naive agent ASR | 89% | *run `npm run eval` with your key* |
-| Guarded agent ASR | 0% | *run `npm run eval` with your key* |
+| Detector precision / recall | 99% / 89% | 89% / 89% |
+| Detector false-positive rate | 13% (1 of 8 benign) | 13% (1 of 8 benign) |
+| Naive agent ASR | 89% | **89%** (8/9 canary attacks) |
+| Guarded agent ASR | 0% | **0%** (0/9) |
+| Benign utility (naive / guarded) | 56% / 67% | **100% / 100%** |
+| Guarded false refusals | 1 | **0** |
+
+The real-model run is a free-tier-friendly stratified sample: all 8 benign controls plus one canary attack per hiding technique (`npm run eval -- --stratified`, 17 Oct 2026). The same detector logic underlies both columns; agent ASR is the RQ2 result.
 
 - **Detection by technique:** every technique that hides text from humans is caught 100% of the time. That is because hiding is itself the strongest signal: instruction-like text humans can't see has almost no legitimate use.
 - **Where the detector fails:**
   - *Subtle visible phrasing* evades it completely (0%). This is the fundamental limit of pattern-based defences.
   - It falsely flags an article that *quotes* "ignore previous instructions". Context matters, and keywords can't see it.
 
-Note: the simulated model is circular by construction, so only real-model ASR answers RQ2. The real run is the key experiment to report on the poster.
+Note: the simulated model is circular by construction. The `gpt-4.1-mini` stratified run is the primary RQ2 evidence on the poster. A full 89-page real-model run needs a higher usage tier (the current key is capped at 50 requests/day per model).
 
 ### RQ3: Explainability
 
