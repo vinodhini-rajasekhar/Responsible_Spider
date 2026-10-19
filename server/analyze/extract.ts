@@ -51,6 +51,18 @@ function px(v: string | undefined): number | null {
   return m[2] === 'em' || m[2] === 'rem' ? n * 16 : n;
 }
 
+const NAMED: Record<string, string> = { white: '#ffffff', black: '#000000' };
+
+function normColor(c: string): string {
+  const v = c.trim().toLowerCase().replace(/\s*!important$/, '');
+  if (NAMED[v]) return NAMED[v];
+  const short = v.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/);
+  if (short) return `#${short[1]}${short[1]}${short[2]}${short[2]}${short[3]}${short[3]}`;
+  const rgb = v.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*1(?:\.0+)?\s*)?\)$/);
+  if (rgb) return `#${rgb.slice(1, 4).map((n) => Number(n).toString(16).padStart(2, '0')).join('')}`;
+  return v;
+}
+
 function hidingReasons(d: Decls, el: Element, inheritedBg: string | null): string[] {
   const r: string[] = [];
   if (d.display === 'none') r.push('display: none');
@@ -60,7 +72,7 @@ function hidingReasons(d: Decls, el: Element, inheritedBg: string | null): strin
   if (fs !== null && fs <= 2) r.push(`font-size ${d['font-size']}`);
   const bg = d['background-color'] ?? d.background ?? inheritedBg;
   if (d.color) {
-    if (bg && d.color === bg) r.push('text colour matches background');
+    if (bg && normColor(d.color) === normColor(bg)) r.push('text colour matches background');
     else if (!bg && WHITE.test(d.color)) r.push('white text on default white page');
   }
   if ((d.position === 'absolute' || d.position === 'fixed') && [d.left, d.top, d.right].some((v) => (px(v) ?? 0) <= -500)) {
