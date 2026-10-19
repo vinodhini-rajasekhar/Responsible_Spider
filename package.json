@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "test": "tsx --test test/*.test.ts",
     "server": "tsx server/index.ts",
     "eval": "tsx bench/run.ts",
     "audit": "tsx bench/ai-bot-audit.ts",

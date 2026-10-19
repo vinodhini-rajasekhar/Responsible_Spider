@@ -64,6 +64,15 @@ npm run audit                # real-world robots.txt audit of 49 popular sites
 
 Results are written to `bench/results/` as JSON and Markdown, and the Evaluation tab reads them.
 
+### Tests
+
+```bash
+npm test          # unit tests, no network or API key needed
+npm run typecheck
+```
+
+The tests in `test/` cover injection scoring, PII detection and Luhn validation, hidden-text detection for each hiding technique, robots.txt consent checks (against a throwaway local server), and the context judge, including the recipe page that used to be a false positive.
+
 **Real-world audit (robots.txt, 16 Oct 2026):** 29 of 44 reachable popular sites (66%) block at least one AI crawler from their homepage. All 9 news sites do. 19 sites block GPTBot while still allowing Googlebot: "search yes, AI training no". Full table: [`bench/results/ai-bot-audit.md`](bench/results/ai-bot-audit.md).
 
 **Benchmark, real model `gpt-4.1-mini`, stratified 17 pages (17 Oct 2026):** naive agent ASR **89%**, Responsible Spider agent ASR **0%**, benign utility 100%/100%, detector precision/recall 89%/89%, false-positive rate 13%. Missed attack: subtle visible phrasing. False positive: a benign article *about* prompt injection. Full 89-page simulated run and methods: [`docs/research.md`](docs/research.md#results), [`bench/results/latest.md`](bench/results/latest.md).
@@ -91,6 +100,7 @@ src/                    UI: canvas web graph + procedural spider + receipt panel
   receipt.ts, panels.ts receipts, site policy, log, evaluation views
 shared/types.ts         types shared by server and UI
 bench/                  run.ts (benchmark), ai-bot-audit.ts, sites.csv, results/
+test/                   unit tests (node:test via tsx)
 docs/research.md        research framing, literature, method, results, limitations
 ```
 
@@ -105,6 +115,10 @@ docs/research.md        research framing, literature, method, results, limitatio
 ## Responsible use
 
 The crawler is meant for research and education. It is rate-limited, origin-bound, identifies itself honestly, and refuses to shadow-fetch opted-out pages on any site except the bundled lab. Don't remove those guardrails to crawl sites that have said no. The lab site's attack pages are synthetic, and their "phishing" domain uses the reserved `.example` TLD.
+
+## License
+
+[MIT](LICENSE).
 
 ## Credits
 

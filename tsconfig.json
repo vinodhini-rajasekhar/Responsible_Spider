@@ -20,5 +20,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "server", "shared", "bench"]
+  "include": ["src", "server", "shared", "bench", "test"]
 }
