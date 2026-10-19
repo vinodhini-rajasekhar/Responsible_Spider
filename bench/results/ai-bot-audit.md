@@ -56,42 +56,42 @@ Generated 2026-10-16T22:35:55.476Z. 44 sites audited (5 unreachable).
 | npr.org | news | unreachable |
 | wsj.com | news | ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
 | bloomberg.com | news | GPTBot, ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
-| wikipedia.org | reference | — |
-| britannica.com | reference | — |
+| wikipedia.org | reference | none |
+| britannica.com | reference | none |
 | stackoverflow.com | reference | unreachable |
 | github.com | developer | Bytespider |
 | medium.com | publishing | GPTBot, ClaudeBot, Bytespider, Applebot-Extended, meta-externalagent |
-| substack.com | publishing | — |
+| substack.com | publishing | none |
 | quora.com | community | GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, PerplexityBot, Bytespider, Applebot-Extended |
 | reddit.com | community | GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
 | x.com | social | GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
 | facebook.com | social | ChatGPT-User, OAI-SearchBot, anthropic-ai, Google-Extended, CCBot, Bytespider, meta-externalagent, cohere-ai |
 | instagram.com | social | ChatGPT-User, OAI-SearchBot, anthropic-ai, Google-Extended, CCBot, Bytespider, meta-externalagent, cohere-ai |
-| linkedin.com | social | — |
+| linkedin.com | social | none |
 | pinterest.com | social | GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
 | tiktok.com | social | GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent |
-| youtube.com | video | — |
+| youtube.com | video | none |
 | vimeo.com | video | CCBot, Bytespider |
 | amazon.com | commerce | GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, Google-Extended, CCBot, PerplexityBot, Bytespider, meta-externalagent, cohere-ai |
 | ebay.com | commerce | GPTBot, ClaudeBot, anthropic-ai, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent |
-| etsy.com | commerce | — |
-| walmart.com | commerce | — |
+| etsy.com | commerce | none |
+| walmart.com | commerce | none |
 | imdb.com | entertainment | GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
 | goodreads.com | entertainment | GPTBot, CCBot |
 | allrecipes.com | lifestyle | ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
 | webmd.com | health | GPTBot, ClaudeBot, CCBot |
 | mayoclinic.org | health | unreachable |
 | nih.gov | government | unreachable |
-| usa.gov | government | — |
-| gov.uk | government | — |
-| harvard.edu | education | — |
-| mit.edu | education | — |
-| duke.edu | education | — |
+| usa.gov | government | none |
+| gov.uk | government | none |
+| harvard.edu | education | none |
+| mit.edu | education | none |
+| duke.edu | education | none |
 | coursera.org | education | meta-externalagent |
-| arxiv.org | science | — |
+| arxiv.org | science | none |
 | nature.com | science | GPTBot, ChatGPT-User, ClaudeBot, anthropic-ai, Google-Extended, CCBot, PerplexityBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
-| deviantart.com | art | — |
-| artstation.com | art | — |
+| deviantart.com | art | none |
+| artstation.com | art | none |
 | flickr.com | art | GPTBot, ClaudeBot, anthropic-ai, Google-Extended, CCBot, Bytespider, Applebot-Extended, meta-externalagent, cohere-ai |
 | shutterstock.com | stock-media | GPTBot, ClaudeBot, CCBot, meta-externalagent |
 | gettyimages.com | stock-media | unreachable |

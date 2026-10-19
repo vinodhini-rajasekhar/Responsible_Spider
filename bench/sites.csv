@@ -1,4 +1,4 @@
-# domain, category — popular sites across sectors; only /robots.txt is fetched
+# domain, category: popular sites across sectors; only /robots.txt is fetched
 nytimes.com, news
 theguardian.com, news
 washingtonpost.com, news

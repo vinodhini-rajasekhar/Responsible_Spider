@@ -108,7 +108,7 @@ export function preFetchChecks(url: string, site: SiteContext): Check[] {
     status: selfAllowed ? 'pass' : 'fail',
     detail: site.policy.robotsFound
       ? selfAllowed ? `No rule blocks ${UA_TOKEN} (or *) from ${path}.` : `The site blocks ${UA_TOKEN}/all crawlers from ${path}.`
-      : 'No robots.txt found — by convention everything is allowed.',
+      : 'No robots.txt found; by convention everything is allowed.',
     evidence: lineEvidence(site, site.robots.getMatchingLineNumber(url, UA_TOKEN)),
   });
 
@@ -179,7 +179,7 @@ export function postFetchChecks(headers: Headers, ex: Extraction): { checks: Che
     checks.push({
       id: 'tdm-meta', layer: 'consent', label: 'No in-page TDM reservation',
       status: tdmReserved ? 'fail' : 'pass',
-      detail: tdmReserved ? 'tdm-reservation=1 — the publisher reserves text-and-data-mining rights.' : 'tdm-reservation present but set to 0.',
+      detail: tdmReserved ? 'tdm-reservation=1: the publisher reserves text-and-data-mining rights.' : 'tdm-reservation present but set to 0.',
       evidence: ex.metaTdm !== null ? `<meta name="tdm-reservation" content="${ex.metaTdm}">` : `TDM-Reservation: ${tdmHeader}`,
     });
   }
@@ -197,7 +197,7 @@ export function postFetchChecks(headers: Headers, ex: Extraction): { checks: Che
     checks.push({
       id: 'license', layer: 'consent', label: 'Licence permits reuse',
       status: nc ? 'warn' : 'pass',
-      detail: cc ? `Creative Commons ${cc[2].toUpperCase()}${nc ? ' — non-commercial only; commercial model training would breach it.' : ' — reuse allowed with attribution.'}` : `Declared licence: ${ex.licenseHref}`,
+      detail: cc ? `Creative Commons ${cc[2].toUpperCase()}${nc ? ': non-commercial only; commercial model training would breach it.' : ': reuse allowed with attribution.'}` : `Declared licence: ${ex.licenseHref}`,
       evidence: ex.licenseHref,
     });
   } else if (ex.copyrightNotice) {

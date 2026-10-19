@@ -9,7 +9,7 @@ export function calloutFor(r: PageReport): { title: string; text: string } {
   const fail = r.checks.find((c) => c.status === 'fail' && c.layer === 'consent');
   switch (r.decision) {
     case 'skipped':
-      return { title: '⊘ Skipped: no consent', text: fail ? `${fail.label} ✕ — ${fail.detail.split('. ')[0]}.` : r.reason };
+      return { title: '⊘ Skipped: no consent', text: fail ? `${fail.label} ✕: ${fail.detail.split('. ')[0]}.` : r.reason };
     case 'quarantined': {
       const top = [...r.segments].sort((a, b) => b.injectionScore - a.injectionScore)[0];
       const how = top?.hidden ? `hidden via ${top.hiddenReasons[0]}` : 'in visible text';
@@ -21,7 +21,7 @@ export function calloutFor(r: PageReport): { title: string; text: string } {
     case 'error':
       return { title: '× Fetch failed', text: r.reason };
     default:
-      return { title: '✓ Collected', text: r.agent?.naive.hijacked ? 'Checks passed, but the naive agent was still hijacked — a miss.' : 'All consent, privacy and security checks passed.' };
+      return { title: '✓ Collected', text: r.agent?.naive.hijacked ? 'Checks passed, but the naive agent was still hijacked: a miss.' : 'All consent, privacy and security checks passed.' };
   }
 }
 
@@ -98,7 +98,7 @@ export function renderReceipt(el: HTMLElement, r: PageReport) {
     try {
       const { baseline, results } = await explainCausally(r.url);
       out.innerHTML = `<p class="muted">Leave-one-out ablation. Baseline naive run: <b class="${baseline.hijacked ? 'bad' : 'good'}">${baseline.hijacked ? 'hijacked' : 'not hijacked'}</b>. A segment is <b>causal</b> if removing it alone stops the hijack.</p>
-      <ul class="segs">${results.map((x) => `<li class="seg ${x.causal ? 'sev-high' : 'sev-low'}"><div class="seg-head"><code>#${x.segmentId} ${esc(x.where)}</code><b>${x.causal ? 'CAUSAL' : baseline.hijacked ? (x.hijackedWithout ? 'not causal' : '—') : 'no hijack to explain'}</b></div><p class="seg-text">${esc(x.text)}</p></li>`).join('')}</ul>`;
+      <ul class="segs">${results.map((x) => `<li class="seg ${x.causal ? 'sev-high' : 'sev-low'}"><div class="seg-head"><code>#${x.segmentId} ${esc(x.where)}</code><b>${x.causal ? 'CAUSAL' : baseline.hijacked ? (x.hijackedWithout ? 'not causal' : 'n/a') : 'no hijack to explain'}</b></div><p class="seg-text">${esc(x.text)}</p></li>`).join('')}</ul>`;
       btn.remove();
     } catch (err) {
       out.innerHTML = `<p class="bad">${esc((err as Error).message)}</p>`;

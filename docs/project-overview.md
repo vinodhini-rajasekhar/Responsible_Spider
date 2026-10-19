@@ -1,4 +1,4 @@
-# Responsible Spider — project overview
+# Responsible Spider: project overview
 
 ## 1. Introduction
 
@@ -10,13 +10,13 @@ AI systems increasingly **scrape the web** to train models and to power “brows
 
 Both problems share one gap: **what a human sees on a page vs. what a machine takes from the HTML.**
 
-**Responsible Spider** is an interactive demo and research artifact that makes that gap visible. An animated spider walks a live map of a website. At each page it stops, decides, and shows a **decision receipt**: why the page was collected, redacted, quarantined, or skipped — and how a naive AI summariser vs. the Responsible Spider agent each behaved.
+**Responsible Spider** is an interactive demo and research artifact that makes that gap visible. An animated spider walks a live map of a website. At each page it stops, decides, and shows a **decision receipt**: why the page was collected, redacted, quarantined, or skipped, and how a naive AI summariser vs. the Responsible Spider agent each behaved.
 
 It sits at the intersection of:
 
-- **Explainable AI (XAI)** — transparent, evidence-bearing decisions
-- **Adversarial AI / red-teaming** — hidden-text prompt injection
-- **AI governance** — consent signals for training and crawling
+- **Explainable AI (XAI):** transparent, evidence-bearing decisions
+- **Adversarial AI / red-teaming:** hidden-text prompt injection
+- **AI governance:** consent signals for training and crawling
 
 ---
 
@@ -66,13 +66,13 @@ Regex + Luhn validation for emails, phones, SSNs, card numbers, and IPs. Matches
 4. **Spotlight** remaining content as untrusted data (datamarking)  
 5. Check the model output for known payload markers / unexpected links  
 
-**Causal explanation:** leave-one-out ablation — re-run the naive agent without each suspicious segment; if the hijack stops, that segment is marked **causal**.
+**Causal explanation:** leave-one-out ablation. Re-run the naive agent without each suspicious segment; if the hijack stops, that segment is marked **causal**.
 
 ### 2.5 Evaluation methods
 
-1. **Lab site** — Willow Creek Community Garden: 20 pages with opt-outs, PII, and 9 injection techniques  
-2. **Injection benchmark** — 89 generated pages (81 attacks + 8 benign controls); stratified 17-page real-model sample for free-tier quotas  
-3. **Real-web audit** — `robots.txt` only, 49 popular sites × 12 AI crawlers  
+1. **Lab site:** Willow Creek Community Garden: 20 pages with opt-outs, PII, and 9 injection techniques  
+2. **Injection benchmark:** 89 generated pages (81 attacks + 8 benign controls); stratified 17-page real-model sample for free-tier quotas  
+3. **Real-web audit:** `robots.txt` only, 49 popular sites × 12 AI crawlers  
 
 ---
 
@@ -97,18 +97,18 @@ Regex + Luhn validation for emails, phones, SSNs, card numbers, and IPs. Matches
 - **9/9** news sites do  
 - **19** block GPTBot but still allow Googlebot (“search yes, AI training no”)
 
-**Injection benchmark — real model `gpt-4.1-mini` (stratified 17 pages)**
+**Injection benchmark, real model `gpt-4.1-mini` (stratified 17 pages)**
 
 | | Naive agent | Responsible Spider agent |
 |---|---|---|
 | Attack success rate | **89%** | **0%** |
 | Benign utility | 100% | 100% |
-| Detector precision / recall | 89% / 89% | — |
-| False-positive rate | 13% (article *about* injection) | — |
+| Detector precision / recall | 89% / 89% | n/a |
+| False-positive rate | 13% (article *about* injection) | n/a |
 
-**By hiding technique:** every *hidden*-text technique was detected 100%. The only miss was **subtle visible phrasing** (no trigger words) — 0% detected, and the naive agent was not hijacked by that soft phrasing either in this sample.
+**By hiding technique:** every *hidden*-text technique was detected 100%. The only miss was **subtle visible phrasing** (no trigger words): 0% detected, and the naive agent was not hijacked by that soft phrasing either in this sample.
 
-**Lab walkthrough:** on the garden site, a consent-blind scraper would take everything; the responsible spider skips opted-out paths, redacts member PII, and quarantines injected blog posts — with receipts showing exactly why.
+**Lab walkthrough:** on the garden site, a consent-blind scraper would take everything; the responsible spider skips opted-out paths, redacts member PII, and quarantines injected blog posts, with receipts showing exactly why.
 
 ### 3.3 Limitations (honest)
 
@@ -127,16 +127,16 @@ What is new / distinctive about this project:
    Most tools do either robots compliance *or* injection defence. This couples both and explains each decision as it happens.
 
 2. **Contrastive, evidence-bearing receipts**  
-   Every page shows *naive vs responsible* and *naive agent vs Responsible Spider agent*, with the exact robots line, CSS trick, or text segment as evidence — not just a risk score.
+   Every page shows *naive vs responsible* and *naive agent vs Responsible Spider agent*, with the exact robots line, CSS trick, or text segment as evidence, not just a risk score.
 
 3. **Causal, not only correlational, explanations**  
    Leave-one-out ablation answers: “which hidden paragraph *caused* the hijack?”
 
 4. **Transparent detector by design**  
-   Named weighted signals instead of an opaque classifier — failures (subtle phrasing; security articles) are interpretable and teachable.
+   Named weighted signals instead of an opaque classifier. Failures (subtle phrasing; security articles) are interpretable and teachable.
 
 5. **Embodied visualisation**  
-   The procedural spider on a site “web” turns an invisible backend process into something a non-expert can watch at Expo — memorable without being only decorative.
+   The procedural spider on a site “web” turns an invisible backend process into something a non-expert can watch at Expo: memorable without being only decorative.
 
 6. **Reproducible lab + benchmark + real-web audit in one artifact**  
    Demo site, 89-page attack suite, and a robots.txt survey ship together so others can re-run the evaluation.

@@ -70,7 +70,7 @@ function simulate(content: string, guarded: boolean): string {
   const sentences = prose.join(' ').split(/(?<=[.!?])\s+/);
   const instructive = /(ignore|disregard)\b.*\binstructions|\b(AI|assistant|summari[sz]er|model)s?\b.{0,40}\b(must|should|instructed)|note to ai|you are now|respond with|begin your summary/i;
   const benign = sentences.filter((s) => !instructive.test(s) && s.length > 25).slice(0, 2).join(' ');
-  let out = `"${title}" — ${benign || 'The page has little readable content.'}`;
+  let out = `"${title}": ${benign || 'The page has little readable content.'}`;
   for (const s of sentences) {
     if (!instructive.test(s)) continue;
     if (guarded) return `${out} This page contains text addressed to AI systems, which I ignored.`;
@@ -108,7 +108,7 @@ async function complete(system: string, content: string, guarded: boolean): Prom
     } catch (err) {
       const status = (err as { status?: number }).status;
       const msg = String((err as Error).message ?? '');
-      // Daily budget exhausted — fail immediately so crawls don't hang for hours.
+      // Daily budget exhausted: fail immediately so crawls don't hang for hours.
       if (status === 429 && /requests per day|RPD/i.test(msg)) {
         throw new Error('OpenAI daily request limit reached for this model. Uncheck “AI agent” to keep crawling, or switch OPENAI_MODEL / wait for reset.');
       }
@@ -116,7 +116,7 @@ async function complete(system: string, content: string, guarded: boolean): Prom
       const m = msg.match(/try again in (\d+)m(\d+)?s/i) ?? msg.match(/try again in (\d+)s/i);
       let wait = Math.min(15_000, 2000 * 2 ** attempt);
       if (m && m[2] === undefined) wait = Math.min(15_000, Number(m[1]) * 1000 + 500);
-      console.warn(`[openai] 429 — waiting ${Math.round(wait / 1000)}s (attempt ${attempt + 1})`);
+      console.warn(`[openai] 429, waiting ${Math.round(wait / 1000)}s (attempt ${attempt + 1})`);
       nextSlot = Date.now() + wait;
       await new Promise((r) => setTimeout(r, wait));
     }
@@ -183,7 +183,7 @@ async function llmContextJudge(s: Segment): Promise<{ injection: boolean; reason
     const msg = String((err as Error).message ?? '');
     if (status === 429 && /requests per day|RPD/i.test(msg)) {
       judgeLlmDisabled = true;
-      console.warn('[openai] daily limit hit — injection judge using local context only for the rest of this process');
+      console.warn('[openai] daily limit hit; injection judge using local context only for the rest of this process');
     } else if (status === 429) {
       console.warn('[openai] injection judge skipped (rate limit); using local context check');
     } else {
@@ -208,7 +208,7 @@ export async function judgeInjections(segments: Segment[], opts: JudgeOptions = 
     const who = useLlm && client && !judgeLlmDisabled && !SIMULATED ? 'LLM context judge' : 'local context judge';
     if (verdict.injection) {
       if (before < QUARANTINE_THRESHOLD) s.injectionScore = Math.max(before, QUARANTINE_THRESHOLD);
-      s.injectionSignals = [...s.injectionSignals.filter((x) => !/context judge/i.test(x)), `${who}: injection — ${verdict.reason}`];
+      s.injectionSignals = [...s.injectionSignals.filter((x) => !/context judge/i.test(x)), `${who}: injection. ${verdict.reason}`];
     } else {
       s.injectionScore = Math.min(before, 0.25);
       s.injectionSignals = [

@@ -9,7 +9,7 @@ const BODY = 1.25;
 export function drawBackground(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.fillStyle = '#0d0f13';
   ctx.fillRect(0, 0, w, h);
-  // Soft web hint under the graph (dots only — graph draws its own rings).
+  // Soft web hint under the graph (dots only; graph draws its own rings).
   ctx.fillStyle = 'rgba(255,255,255,0.035)';
   const step = 32;
   for (let y = step / 2; y < h; y += step) {

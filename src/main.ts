@@ -119,7 +119,7 @@ function onEvent(e: CrawlEvent) {
     case 'page': {
       const existing = graph.nodes.get(e.report.url);
       if (existing?.report) {
-        // Second emit: AI agent finished — refresh the receipt without re-animating.
+        // Second emit: AI agent finished; refresh the receipt without re-animating.
         existing.report = e.report;
         if (selected === e.report.url || followSelection) select(e.report.url, false);
       } else {

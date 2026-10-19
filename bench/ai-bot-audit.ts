@@ -68,7 +68,7 @@ const summary = {
 const dir = fileURLToPath(new URL('./results/', import.meta.url));
 mkdirSync(dir, { recursive: true });
 writeFileSync(`${dir}ai-bot-audit.json`, JSON.stringify(summary, null, 2));
-const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : '–');
+const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : 'n/a');
 const md = `# AI-crawler opt-out audit (robots.txt)
 
 Generated ${summary.generatedAt}. ${ok.length} sites audited (${summary.sitesFailed} unreachable).
@@ -91,7 +91,7 @@ ${categories.map((c) => `| ${c.category} | ${c.sites} | ${c.anyAiBlocked} (${pct
 
 | Site | Category | Blocked AI crawlers |
 |---|---|---|
-${results.map((r) => `| ${r.domain} | ${r.category} | ${r.ok ? r.blocked.join(', ') || '—' : 'unreachable'} |`).join('\n')}
+${results.map((r) => `| ${r.domain} | ${r.category} | ${r.ok ? r.blocked.join(', ') || 'none' : 'unreachable'} |`).join('\n')}
 `;
 writeFileSync(`${dir}ai-bot-audit.md`, md);
 console.log(md);

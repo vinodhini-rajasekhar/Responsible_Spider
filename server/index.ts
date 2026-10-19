@@ -55,7 +55,7 @@ api.get('/api/crawl', async (q, res) => {
 
 api.post('/api/explain', async (q, res) => {
   const cached = pageCache.get(String(q.body?.url ?? ''));
-  if (!cached) return void res.status(404).json({ error: 'Page not in cache — crawl it first.' });
+  if (!cached) return void res.status(404).json({ error: 'Page not in cache; crawl it first.' });
   try {
     res.json(await ablate(cached.title, cached.segments));
   } catch (err) {
