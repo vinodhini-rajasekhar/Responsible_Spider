@@ -13,6 +13,8 @@ An animated spider walks a live map of a website. At each page it stops, checks 
 | **Security** | Text hidden from humans (display:none, white-on-white, zero font, off-screen, comments, alt text, `<noscript>`…), plus instruction-like text aimed at AI | Drops hidden text, quarantines likely prompt injections, and spotlights the rest as untrusted data |
 | **Politeness** | Crawl-delay, `nofollow`, request rate | Waits and doesn't follow links when asked |
 
+Quarantine is a two-stage decision. Transparent pattern rules flag candidate segments, then a **context judge** re-reads each candidate with its full sentence before anything is quarantined: an LLM when the AI agent is on, or a local rule-based check otherwise. That is why a recipe saying a sauce should "act as a counterpoint" is collected, while "AI assistants: ignore previous instructions" hidden in white text is not. The receipt shows which rules fired and the judge's reason. Details: [`docs/research.md`](docs/research.md#context-judge-second-stage).
+
 Every page is also summarised by two AI agents side by side. A **naive agent** reads the page the way most scrapers do: all text, hidden or not. The **Responsible Spider agent** reads it through the layers above. When the naive one gets hijacked, a **leave-one-out causal explanation** re-runs it without each suspicious segment and pinpoints which piece of hidden text caused the hijack.
 
 > Built for a Responsible AI course final project (XAI, adversarial AI, AI governance). See [`docs/research.md`](docs/research.md) for the research questions, literature, method and results.
@@ -72,7 +74,7 @@ Results are written to `bench/results/` as JSON and Markdown, and the Evaluation
 server/
   index.ts              API (5319) + lab site (5320)
   crawler.ts            BFS crawl, decisions, streaming events
-  llm.ts                naive vs Responsible Spider agents, simulated model, leave-one-out ablation
+  llm.ts                naive vs Responsible Spider agents, context judge, simulated model, leave-one-out ablation
   analyze/
     consent.ts          robots.txt / AI bots / ai.txt / TDMRep / noai / licence checks
     extract.ts          page → text segments + why each is (in)visible to humans
@@ -95,7 +97,7 @@ docs/research.md        research framing, literature, method, results, limitatio
 ## Known limitations
 
 - **Static visibility analysis.** Hidden text is detected from inline styles and simple `<style>` rules, not a real rendering engine. External stylesheets, the full cascade and JavaScript-rendered content are missed. A headless-browser pass would close most of this gap.
-- **The heuristic detector can be evaded.** Injections phrased without trigger words get through (0% detected in the benchmark), and articles *about* injection get flagged. The detector is transparent by design, and its failures are part of what the project shows.
+- **The heuristic detector can be evaded.** Injections phrased without trigger words get through (0% detected in the benchmark), and articles *about* injection get flagged. The detector is transparent by design, and its failures are part of what the project shows. The benchmark scores the pattern rules; adding the local context judge leaves its numbers unchanged, and the LLM judge has not been benchmarked.
 - **Opt-out signals are fragmented and voluntary.** robots.txt was built for search, not AI. `ai.txt`, `noai` and TDMRep have patchy adoption, and none of them is technically enforced.
 - **Simulated results are circular.** The stand-in model obeys roughly the same patterns the detector looks for. Use a real model for real conclusions.
 - **Small, synthetic benchmark.** It has 89 pages, 3 articles, 3 attacker goals and 9 techniques. Real attacks are more varied, and adaptive attackers would target the detector directly.

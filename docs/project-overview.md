@@ -56,7 +56,9 @@ Regex + Luhn validation for emails, phones, SSNs, card numbers, and IPs. Matches
 
 **Visibility analysis (static):** detect text hidden via `display:none`, white-on-white, zero font size, off-screen CSS, HTML comments, alt text, `<noscript>`, etc.
 
-**Transparent injection scorer:** weighted, named signals (e.g. “ignore previous instructions”, “note to AI”, role reassignment). Score = \(1 - \prod(1 - w_i)\). Segments above threshold **0.5** are quarantined.
+**Transparent injection scorer:** weighted, named signals (e.g. “ignore previous instructions”, “note to AI”, role reassignment). Score = \(1 - \prod(1 - w_i)\).
+
+**Context judge:** every segment the rules flag is re-read with its full sentence before quarantine, by an LLM when the AI agent is on, otherwise by a local rule-based check. Soft phrases such as "act as" (weight 0.3) can never quarantine a page alone, so a recipe that says a sauce should "act as a counterpoint" is collected. Segments still scoring **0.5** or more after the judge are quarantined, and the receipt shows the judge's reason.
 
 **Responsible Spider agent defences (stacked):**
 

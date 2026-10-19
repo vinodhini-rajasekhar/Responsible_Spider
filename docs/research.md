@@ -30,10 +30,22 @@ Each design choice maps to known findings about what makes explanations useful:
 ### Defence layers (Responsible Spider agent)
 
 1. **Visibility filtering.** Text that is never rendered for humans is dropped. Alt text is kept unless it looks like an instruction, because it is legitimate accessibility content.
-2. **Quarantine.** Segments scoring ≥ 0.5 are removed.
+2. **Quarantine.** Segments scoring ≥ 0.5 after the context judge (below) are removed.
 3. **PII redaction.**
 4. **Spotlighting** (Hines et al., 2024). Content is delimited and *datamarked* (words joined with `^`), and the system prompt declares it to be data, not instructions.
 5. **Output check.** The agent's answer is scanned for known payload markers and for links that do not appear in the visible page.
+
+### Context judge (second stage)
+
+Short phrases alone are a poor basis for quarantine. In a live crawl, a recipe page that said a sauce should "act as a counterpoint" to a rich dish was quarantined, because "act as" was one of the role-reassignment signals. That false positive drove a two-stage design (`judgeInjections` in `server/llm.ts`):
+
+1. **Candidates.** The pattern rules still run first. Any segment with a score of 0.3 or more, or with any signal firing, becomes a candidate. Soft phrases ("act as", "pretend to be", "you are now", "new persona") were lowered to weight 0.3, so none of them can reach the 0.5 threshold on its own.
+2. **Judgement with the full sentence.** Each candidate is re-read in context:
+   - **LLM judge** (when the AI agent is on and a key is set). The model sees the segment text, whether it is hidden from humans, and which signals fired, and returns `{"injection": true|false, "reason": "..."}` at temperature 0.
+   - **Local judge** (no key, AI agent off, or the daily request limit is reached). A rule-based check clears segments whose only signals are soft phrases used in ordinary visible prose, such as "act as" not followed by an AI-related role. Anything hidden from humans, or carrying a strong signal ("ignore previous instructions", "note to AI", "do not tell the user"), keeps its score.
+3. **Outcome.** A segment judged benign has its score capped at 0.25 and gets the signal `cleared by <judge>: <reason>`. A segment judged malicious is raised to at least 0.5 and gets `<judge>: injection. <reason>`. Both appear in the receipt, so the decision stays explainable.
+
+The judge only runs on candidates, so ordinary pages cost no extra model calls. When the AI agent is switched off, the crawler uses the local judge only and never calls the API.
 
 ### Consent policy
 
@@ -109,7 +121,7 @@ The real-model run is a free-tier-friendly stratified sample: all 8 benign contr
 - **Detection by technique:** every technique that hides text from humans is caught 100% of the time. That is because hiding is itself the strongest signal: instruction-like text humans can't see has almost no legitimate use.
 - **Where the detector fails:**
   - *Subtle visible phrasing* evades it completely (0%). This is the fundamental limit of pattern-based defences.
-  - It falsely flags an article that *quotes* "ignore previous instructions". Context matters, and keywords can't see it.
+  - It falsely flags an article that *quotes* "ignore previous instructions". Context matters, and keywords can't see it. The context judge was added for exactly this kind of case, but the local judge does not clear this page: "ignore previous instructions" is a strong signal, and quoting it looks the same as using it to a rule. Running all 89 pages through the pattern rules plus the local judge gives identical numbers (72 true positives, 1 false positive, 9 misses, 7 true negatives). The LLM judge has not been benchmarked yet.
 
 Note: the simulated model is circular by construction. The `gpt-4.1-mini` stratified run is the primary RQ2 evidence on the poster. A full 89-page real-model run needs a higher usage tier (the current key is capped at 50 requests/day per model).
 
@@ -121,6 +133,7 @@ So far the evidence is design rationale and walkthroughs. A small expo-day study
 
 - **Visibility analysis is static.** There is no rendering engine, external CSS or JavaScript, so false negatives are certain on real sites.
 - **The heuristic detector can be evaded.** An adaptive attacker can phrase around the signals, and keyword matching causes false positives on security content.
+- **The LLM context judge is itself an LLM reading attacker text.** A payload could try to talk the judge into clearing it. The judge only sees candidate segments as JSON data, and hidden segments (other than alt text) are dropped from the Responsible Spider agent's input whatever the judge says, but a visible, well-crafted injection could still be cleared.
 - **Consent signals are voluntary and ambiguous.** robots.txt was designed for search indexing, and treating an AI-bot block as a general AI opt-out is an interpretation. Publishers may disagree, in either direction.
 - **The benchmark is small and synthetic.** It uses one domain (gardening), three goals and English only. Results may not transfer.
 - **Payload-specific success detection.** Attack success is measured with regexes, which can miss paraphrased compliance. An LLM judge would catch more but would add its own errors.
