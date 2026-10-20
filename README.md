@@ -43,7 +43,9 @@ Then open **http://localhost:5317** and click **Crawl the lab site**.
 
 ### OpenAI key (optional but recommended)
 
-Put `OPENAI_API_KEY=sk-...` in `.env` (and optionally `OPENAI_MODEL`, default `gpt-4o-mini`; the poster eval used `gpt-4.1-mini` when `gpt-4o-mini`'s daily request budget was exhausted). Without a key, a **simulated model** stands in. It is deliberately gullible: it obeys any explicit instruction it is given, so the pipeline and UI are fully demoable offline. The UI labels it "Simulated model" everywhere. Simulated results show what the defence *filters*. They are **not** evidence about how real LLMs behave.
+No model downloads or GPU setup are required. After `cp .env.example .env`, set `OPENAI_API_KEY=sk-...` for real model runs. Optional: set `OPENAI_MODEL` (default `gpt-4.1-mini`; `gpt-4o-mini` also works). Free-tier accounts are capped at about 50 requests per day per model.
+
+Without a key, a **simulated model** stands in. It is deliberately gullible: it obeys any explicit instruction it is given, so the pipeline and UI are fully demoable offline. The UI labels it "Simulated model" everywhere. Simulated results show what the defence *filters*. They are **not** evidence about how real LLMs behave.
 
 ## Using it
 

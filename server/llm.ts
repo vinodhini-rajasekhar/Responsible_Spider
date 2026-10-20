@@ -5,7 +5,7 @@ import { redactPii } from './analyze/pii.ts';
 import { ALL_DETECTORS } from './lab/payloads.ts';
 
 const apiKey = process.env.OPENAI_API_KEY?.trim();
-export const MODEL = process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini';
+export const MODEL = process.env.OPENAI_MODEL?.trim() || 'gpt-4.1-mini';
 export const SIMULATED = !apiKey;
 const client = apiKey ? new OpenAI({ apiKey }) : null;
 
