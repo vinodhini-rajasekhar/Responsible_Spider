@@ -122,6 +122,4 @@ The crawler is meant for research and education. It is rate-limited, origin-boun
 
 [MIT](LICENSE).
 
-## Credits
-
-The procedural spider animation is inspired by Slava Rybin's ([@rybinfx](https://x.com/rybinfx)) cursor-following spider; this is an original implementation. Built with Vite, TypeScript, Canvas 2D, Express, cheerio and robots-parser.
+Built with Vite, TypeScript, Canvas 2D, Express, cheerio and robots-parser.
